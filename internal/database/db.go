@@ -1765,6 +1765,10 @@ func runSeeders(isUsersEmpty bool) error {
 		return err
 	}
 
+	if err := migrateRetiredSiteTemplates(); err != nil {
+		return err
+	}
+
 	// Idempotent, not seeder-gated: bad values can re-enter via a restored
 	// backup, so re-check on every start.
 	return normalizeSettingPaths()

@@ -5455,57 +5455,8 @@
         "tags": [
           "Decoy websites"
         ],
-        "summary": "List built-in, installed and available open-source templates",
+        "summary": "List built-in Chinese templates and imported template ZIPs",
         "operationId": "get_panel_api_sites_templates",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {}
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/sites/templates/install": {
-      "post": {
-        "tags": [
-          "Decoy websites"
-        ],
-        "summary": "Install an allowlisted open-source template",
-        "operationId": "post_panel_api_sites_templates_install",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "description": ""
-                  }
-                },
-                "required": [
-                  "id"
-                ]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successful response",

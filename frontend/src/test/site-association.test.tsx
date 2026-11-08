@@ -21,7 +21,7 @@ vi.mock('@/api/queries/useSites', () => ({
           email: '',
           title: '',
           description: '',
-          template: 'journal',
+          template: 'news',
           port: 443,
         },
       },

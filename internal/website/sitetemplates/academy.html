@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.Title}} - 职业技能在线学习平台</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#fff;--fg:#1c1b2e;--muted:#64647d;--accent:#5b3df5;--line:#ececf4;--line-strong:#cfc8fb;--card:#fff;--alt:#f6f5fd;--icon-bg:#efebff;--foot-bg:#16152a;--foot-fg:#b9b8cf;--radius:16px;--thumb:linear-gradient(135deg,#7c5cff,#5b3df5)}
+.hero{padding:72px 0 80px;background:#f6f5fd}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero .lead{margin-top:22px}
+.search{display:flex;margin-top:34px;max-width:520px;background:#fff;border:1px solid var(--line-strong);border-radius:999px;padding:6px;box-shadow:0 18px 40px -24px rgba(91,61,245,.5)}
+.search span{flex:1;padding:0 20px;display:flex;align-items:center;color:#9a99b0;font-size:15px}
+.search .btn{border-radius:999px}
+.hot{margin-top:18px;font-size:14px;color:var(--muted)}
+.hot span{margin-right:14px}
+.live{background:#fff;border:1px solid var(--line);border-radius:8px;padding:24px}
+.live h3{font-size:17px;display:flex;justify-content:space-between;margin-bottom:8px}
+.live h3 a{font-size:13px;font-weight:400;color:var(--accent)}
+.live li{display:grid;grid-template-columns:82px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.live time{font-size:13px;color:var(--accent);font-weight:600}
+.live b{display:block;font-size:15px}
+.live span{font-size:12px;color:var(--muted)}
+.cats{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.cat{padding:22px;border-radius:16px;background:var(--alt);text-align:center;font-weight:600;transition:transform .2s}
+.cat:hover{transform:translateY(-3px)}
+.cat i{display:grid;place-items:center;width:52px;height:52px;margin:0 auto 12px;border-radius:14px;font-style:normal;font-size:22px;color:#fff}
+.cat small{display:block;color:var(--muted);font-weight:400;font-size:13px}
+.course{padding:0;overflow:hidden}
+.course .cover{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:18px;color:#fff;font-weight:800;font-size:22px}
+.course .cover em{position:absolute;top:14px;left:14px;font-style:normal;font-size:12px;background:rgba(0,0,0,.35);padding:3px 10px;border-radius:999px;font-weight:600}
+.course .body{padding:22px}
+.course h3{font-size:18px;margin:0 0 8px}
+.course .row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:14px}
+.course .price{color:#f04c3e;font-weight:800;font-size:18px}
+.path{display:grid;grid-template-columns:repeat(4,1fr);gap:0;counter-reset:s}
+.path div{padding:28px 24px;border-top:3px solid var(--line);position:relative}
+.path div::before{counter-increment:s;content:"0" counter(s);position:absolute;top:-16px;left:24px;background:var(--accent);color:#fff;font-weight:800;font-size:13px;padding:4px 10px;border-radius:999px}
+.path div:first-child{border-top-color:var(--accent)}
+.path h3{font-size:19px;margin:8px 0}
+.path p{color:var(--muted);font-size:14px}
+.teacher{display:flex;gap:18px;align-items:center}
+.avatar{width:72px;height:72px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:800;font-size:24px}
+.review{font-size:15px}
+.review p{color:var(--fg)!important;font-size:16px!important;line-height:1.8}
+.review .who{display:flex;gap:12px;align-items:center;margin-top:20px;font-size:14px;color:var(--muted)}
+.review .who i{width:36px;height:36px;border-radius:50%;background:var(--thumb)}
+.faq details{border-bottom:1px solid var(--line);padding:20px 0}
+.faq summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between}
+.faq summary::after{content:"+";color:var(--accent);font-size:22px;line-height:1}
+.faq p{color:var(--muted);margin-top:12px}
+.join{border-radius:8px;padding:56px;background:#5b3df5;color:#fff;text-align:center}
+.join h2{font-size:clamp(26px,3.4vw,40px)}
+.join p{opacity:.85;margin:14px auto 30px;max-width:560px}
+.join .btn-primary{background:#ffd66b;color:#1c1b2e}
+@media (max-width:980px){.hero .wrap{grid-template-columns:1fr}.cats{grid-template-columns:repeat(3,1fr)}.path{grid-template-columns:1fr 1fr;row-gap:32px}.join{padding:40px 24px}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><svg viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="10" fill="#5b3df5"/><path d="M7 14l10-5 10 5-10 5-10-5Z" fill="#fff"/><path d="M11 16.5v5c2 1.6 4 2.4 6 2.4s4-.8 6-2.4v-5" stroke="#ffd66b" stroke-width="2"/></svg>{{.Title}}</a>
+    <nav class="menu"><a href="#courses">全部课程</a><a href="#path">学习路径</a><a href="#teachers">名师团队</a><a href="#stories">学员故事</a><a href="#faq">常见问题</a></nav>
+    <div class="actions"><a class="hide-sm" href="#faq">登录</a><a class="btn btn-primary btn-sm" href="#join">免费试听</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>职场技能课程<br>学完就能用上</h1>
+      <p class="lead">{{.Description}}</p>
+      <div class="search"><span>搜索你感兴趣的课程，如“数据分析”</span><a class="btn btn-primary" href="#courses">搜索</a></div>
+      <p class="hot"><span>热门：</span><span>Python 编程</span><span>产品经理</span><span>UI 设计</span><span>商务英语</span></p>
+    </div>
+    <aside class="live">
+      <h3>近期直播课 <a href="#courses">课程表 ›</a></h3>
+      <ul>
+        <li><time>周二 20:00</time><div><b>Python 数据清洗实战</b><span>王老师 · 已预约 1,286 人</span></div><a class="btn btn-ghost btn-sm" href="#join">预约</a></li>
+        <li><time>周三 19:30</time><div><b>Figma 组件库搭建</b><span>李老师 · 已预约 864 人</span></div><a class="btn btn-ghost btn-sm" href="#join">预约</a></li>
+        <li><time>周四 20:00</time><div><b>Excel 透视表与可视化</b><span>赵老师 · 已预约 2,031 人</span></div><a class="btn btn-ghost btn-sm" href="#join">预约</a></li>
+        <li><time>周六 10:00</time><div><b>产品需求文档怎么写</b><span>周老师 · 已预约 975 人</span></div><a class="btn btn-ghost btn-sm" href="#join">预约</a></li>
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<section class="section" style="padding-top:72px">
+  <div class="wrap cats">
+    <div class="cat"><i style="background:#5b3df5">&lt;/&gt;</i>编程开发<small>320 门课程</small></div>
+    <div class="cat"><i style="background:#ff6b8b">✎</i>设计创意<small>180 门课程</small></div>
+    <div class="cat"><i style="background:#22c4a0">▤</i>数据分析<small>140 门课程</small></div>
+    <div class="cat"><i style="background:#ff8a4c">◆</i>产品运营<small>110 门课程</small></div>
+    <div class="cat"><i style="background:#3b82f6">文</i>语言学习<small>260 门课程</small></div>
+    <div class="cat"><i style="background:#a855f7">▲</i>职场管理<small>90 门课程</small></div>
+  </div>
+</section>
+
+<section class="section section-alt" id="courses">
+  <div class="wrap">
+    <div class="section-head"><div><h2>热门精品课程</h2></div><a class="more" href="#courses">查看全部 →</a></div>
+    <div class="grid g4">
+      <article class="card course"><div class="cover" style="background:linear-gradient(135deg,#5b3df5,#9b5cff)"><em>畅销</em>Python 全栈</div><div class="body"><h3>Python 全栈开发实战营</h3><p>从语法基础到项目上线，系统掌握后端开发。</p><div class="row"><span class="meta">4.2 万人在学</span><span class="price">¥1,299</span></div></div></article>
+      <article class="card course"><div class="cover" style="background:linear-gradient(135deg,#ff6b8b,#ff9a5c)"><em>新课</em>UI/UX 设计</div><div class="body"><h3>UI/UX 设计师成长计划</h3><p>设计思维、交互原型与视觉规范一站式学习。</p><div class="row"><span class="meta">2.8 万人在学</span><span class="price">¥999</span></div></div></article>
+      <article class="card course"><div class="cover" style="background:linear-gradient(135deg,#0ea5a0,#22c4a0)"><em>热门</em>数据分析</div><div class="body"><h3>商业数据分析与可视化</h3><p>用数据驱动决策，掌握主流分析工具与方法。</p><div class="row"><span class="meta">3.5 万人在学</span><span class="price">¥899</span></div></div></article>
+      <article class="card course"><div class="cover" style="background:linear-gradient(135deg,#3b82f6,#6366f1)"><em>精品</em>商务英语</div><div class="body"><h3>职场商务英语进阶</h3><p>邮件、会议与谈判场景的实用英语表达。</p><div class="row"><span class="meta">5.1 万人在学</span><span class="price">¥699</span></div></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="path">
+  <div class="wrap">
+    <div class="section-head"><div><h2>科学的学习路径</h2></div><p>每门课程都配有清晰的学习路线、实战项目与助教答疑，让学习更高效。</p></div>
+    <div class="path">
+      <div><h3>测评定级</h3><p>入学测评精准了解基础，推荐适合的起点。</p></div>
+      <div><h3>系统学习</h3><p>体系化课程与配套讲义，循序渐进掌握知识。</p></div>
+      <div><h3>项目实战</h3><p>真实企业案例驱动，积累可展示的作品。</p></div>
+      <div><h3>就业服务</h3><p>简历指导、模拟面试与内推机会全程护航。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="teachers">
+  <div class="wrap">
+    <div class="section-head"><div><h2>来自一线的名师团队</h2></div></div>
+    <div class="grid g3">
+      <article class="card teacher"><span class="avatar" style="background:#5b3df5">王</span><div><h3 style="margin:0 0 4px">王老师</h3><p>资深架构师，12 年大型互联网系统研发经验。</p></div></article>
+      <article class="card teacher"><span class="avatar" style="background:#ff6b8b">李</span><div><h3 style="margin:0 0 4px">李老师</h3><p>设计总监，主导过多款千万级用户产品设计。</p></div></article>
+      <article class="card teacher"><span class="avatar" style="background:#22c4a0">赵</span><div><h3 style="margin:0 0 4px">赵老师</h3><p>数据科学家，专注商业分析与机器学习应用。</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="stories">
+  <div class="wrap">
+    <div class="section-head"><div><h2>学员怎么说</h2></div></div>
+    <div class="grid g3">
+      <article class="card review"><p>“零基础入门，跟着学习路径坚持了四个月，顺利转行成为后端开发工程师。”</p><div class="who"><i></i>小周 · 后端开发工程师</div></article>
+      <article class="card review"><p>“课程项目非常贴近真实工作，作品集直接帮我拿到了心仪公司的面试机会。”</p><div class="who"><i></i>Amy · 交互设计师</div></article>
+      <article class="card review"><p>“助教答疑很及时，学到的分析方法第二天就能用在工作汇报里。”</p><div class="who"><i></i>陈先生 · 运营经理</div></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="faq">
+  <div class="wrap faq" style="max-width:860px">
+    <div class="section-head"><div><h2>常见问题</h2></div></div>
+    <details open><summary>课程可以反复观看吗？</summary><p>购买后课程永久有效，可在电脑与手机上随时回看。</p></details>
+    <details><summary>零基础可以学习吗？</summary><p>可以。入学测评会根据你的基础推荐合适的课程与学习计划。</p></details>
+    <details><summary>学完有证书吗？</summary><p>完成全部课时与结业项目后，可获得平台颁发的结业证书。</p></details>
+    <details><summary>不满意可以退款吗？</summary><p>购买后 7 天内且学习进度不超过 20% 可申请全额退款。</p></details>
+  </div>
+</section>
+
+<section class="section" id="join">
+  <div class="wrap"><div class="join"><h2>现在加入，领取新人专属学习礼包</h2><p>免费试听 3 节精品课，并获得一对一学习规划服务。</p><a class="btn btn-primary" href="#join">立即免费试听</a></div></div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about"><a class="logo" href="#" style="color:#fff">{{.Title}}</a><p>让每个人都能获得优质的职业教育，持续成长。</p></div>
+      <div><h4>课程</h4><ul><li>编程开发</li><li>设计创意</li><li>数据分析</li><li>语言学习</li></ul></div>
+      <div><h4>服务</h4><ul><li>学习路径</li><li>企业培训</li><li>就业服务</li><li>证书查询</li></ul></div>
+      <div><h4>关于</h4><ul><li>关于我们</li><li>成为讲师</li><li>加入我们</li><li>媒体报道</li></ul></div>
+      <div><h4>帮助</h4><ul><li>常见问题</li><li>用户协议</li><li>退款说明</li><li>support@{{.Domain}}</li></ul></div>
+    </div>
+    <div class="legal"><div>© {{.Year}} {{.Title}} 版权所有</div><div><span>用户协议</span><span>隐私政策</span></div></div>
+  </div>
+</footer>
+</body>
+</html>

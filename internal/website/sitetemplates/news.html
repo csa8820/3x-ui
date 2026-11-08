@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.Title}} - 有深度的新闻资讯</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#fff;--fg:#1a1a1a;--muted:#6b6b6b;--accent:#c8102e;--line:#e5e5e5;--line-strong:#1a1a1a;--card:#fff;--alt:#f6f6f6;--icon-bg:#fbe7ea;--foot-bg:#111;--foot-fg:#aaa;--radius:0;--thumb:#ddd}
+.masthead{border-bottom:3px solid var(--fg)}
+.masthead .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:26px 0 18px}
+.masthead .logo{font-size:40px;letter-spacing:.08em;font-family:"Songti SC","Noto Serif CJK SC",serif;font-weight:900}
+.masthead .logo i{width:12px;height:40px;background:var(--accent);display:block}
+.masthead .date{font-size:13px;color:var(--muted);text-align:right}
+.channels{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.channels .wrap{display:flex;gap:28px;overflow:auto;height:50px;align-items:center;font-weight:600;white-space:nowrap}
+.channels a.on{color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent);height:100%;display:flex;align-items:center}
+.ticker{background:var(--alt);font-size:14px}
+.ticker .wrap{display:flex;gap:16px;padding:10px 0}
+.ticker b{background:var(--accent);color:#fff;padding:0 10px;font-size:13px;line-height:24px}
+h1,h2,h3{font-family:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",serif}
+.top{display:grid;grid-template-columns:2fr 1fr;gap:36px;padding:36px 0}
+.lead-story .pic{aspect-ratio:16/9;position:relative;overflow:hidden;background:linear-gradient(135deg,#2b3a55,#7a2a35)}
+.lead-story .pic svg{position:absolute;inset:0;width:100%;height:100%}
+.lead-story h1{font-size:clamp(28px,3.4vw,40px);margin:18px 0 12px;line-height:1.35}
+.lead-story .lead{color:var(--muted);font-size:17px}
+.kicker{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.06em}
+.side h2{font-size:18px;padding-bottom:10px;border-bottom:2px solid var(--fg);margin-bottom:6px;font-family:-apple-system,"PingFang SC",sans-serif}
+.side li{padding:14px 0;border-bottom:1px solid var(--line)}
+.side li h3{font-size:17px;line-height:1.5}
+.side li .meta{margin-top:4px}
+.rank li{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:start}
+.rank li b{font-size:22px;color:#bbb;font-family:Georgia,serif;line-height:1.2}
+.rank li:nth-child(-n+3) b{color:var(--accent)}
+.block-title{display:flex;justify-content:space-between;align-items:center;border-top:3px solid var(--fg);padding-top:12px;margin-bottom:22px}
+.block-title h2{font-size:24px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.story .pic{aspect-ratio:3/2;margin-bottom:12px}
+.story h3{font-size:19px;line-height:1.45;margin:6px 0}
+.story p{color:var(--muted);font-size:14px}
+.split{display:grid;grid-template-columns:repeat(2,1fr);gap:48px}
+.mini{display:grid;grid-template-columns:1fr 120px;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.mini h3{font-size:17px;line-height:1.5}
+.mini .pic{aspect-ratio:4/3}
+.feature{background:#111;color:#fff;padding:72px 0}
+.feature .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.feature .pic{aspect-ratio:4/3;background:linear-gradient(135deg,#7a2a35,#1d2a44)}
+.feature h2{font-size:clamp(28px,3.4vw,42px);line-height:1.35;margin:14px 0}
+.feature p{color:#bbb}
+.feature .kicker{color:#ff5a6e}
+.photo-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px}
+.photo-row .pic{position:relative;aspect-ratio:4/3}
+.photo-row .pic:first-child{grid-row:span 2;aspect-ratio:auto}
+.photo-row .pic span{position:absolute;left:0;right:0;bottom:0;padding:16px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7));font-weight:600}
+@media (max-width:980px){.top,.split,.feature .wrap{grid-template-columns:1fr}.cols3{grid-template-columns:1fr 1fr}.photo-row{grid-template-columns:1fr 1fr}.photo-row .pic:first-child{grid-column:1/-1;grid-row:auto;aspect-ratio:16/9}.masthead .date{display:none}}
+@media (max-width:620px){.cols3{grid-template-columns:1fr}.masthead .logo{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap"><div>{{.Year}} 年 · 客户端下载 · 订阅电子报</div><div><span>登录</span><span>注册</span></div></div></div>
+<div class="masthead"><div class="wrap"><a class="logo" href="#"><i></i>{{.Title}}</a><div class="date">让新闻回归事实与深度<br>独立 · 客观 · 专业</div></div></div>
+<nav class="channels"><div class="wrap"><a class="on" href="#">首页</a><a href="#tech">科技</a><a href="#biz">财经</a><a href="#society">社会</a><a href="#world">国际</a><a href="#culture">文化</a><a href="#photo">图片</a><a href="#feature">深度</a><a href="#tech">评论</a></div></nav>
+<div class="ticker"><div class="wrap"><b>快讯</b><span>多地出台新一轮促消费措施，涵盖汽车、家电与文旅等领域</span></div></div>
+
+<main class="wrap">
+  <section class="top">
+    <article class="lead-story">
+      <div class="pic" aria-hidden="true"><svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice"><path d="M0 330 L120 250 L220 300 L360 180 L470 260 L600 150 L800 240 V450 H0Z" fill="rgba(255,255,255,.12)"/><path d="M0 380 L160 320 L300 360 L460 290 L620 340 L800 300 V450 H0Z" fill="rgba(0,0,0,.25)"/><circle cx="650" cy="90" r="50" fill="rgba(255,255,255,.2)"/></svg></div>
+      <span class="kicker">头条 · 深度报道</span>
+      <h1>新质生产力加速成长：一座制造业城市的十年转型之路</h1>
+      <p class="lead">{{.Description}}</p>
+      <p class="meta" style="margin-top:12px">本报记者 · {{.Year}}-10-18 08:30</p>
+    </article>
+    <aside class="side">
+      <h2>要闻</h2>
+      <ul>
+        <li><h3>全国秋粮收获进度过半，主产区单产稳中有升</h3><p class="meta">社会 · 1 小时前</p></li>
+        <li><h3>新能源汽车出口持续增长，海外市场结构不断优化</h3><p class="meta">财经 · 2 小时前</p></li>
+        <li><h3>国产大飞机累计交付量再创新高</h3><p class="meta">科技 · 3 小时前</p></li>
+        <li><h3>多所高校发布人工智能通识课程体系</h3><p class="meta">教育 · 4 小时前</p></li>
+        <li><h3>城市更新行动推进，一批老旧小区焕新</h3><p class="meta">社会 · 5 小时前</p></li>
+      </ul>
+      <h2 style="margin-top:28px">热榜</h2>
+      <ol class="rank" style="margin:0;padding:0;list-style:none">
+        <li><b>1</b><h3 style="font-size:16px">年轻人为何爱上“city walk”</h3></li>
+        <li><b>2</b><h3 style="font-size:16px">一图读懂个人养老金新政</h3></li>
+        <li><b>3</b><h3 style="font-size:16px">秋季流感高发期如何科学防护</h3></li>
+        <li><b>4</b><h3 style="font-size:16px">深海探测器完成万米级下潜</h3></li>
+        <li><b>5</b><h3 style="font-size:16px">博物馆夜场为何一票难求</h3></li>
+      </ol>
+    </aside>
+  </section>
+
+  <section class="section" id="tech" style="padding-top:24px">
+    <div class="block-title"><h2>科技</h2><a class="more" href="#tech">更多 →</a></div>
+    <div class="cols3">
+      <article class="story"><div class="pic" style="background:linear-gradient(135deg,#1d4ed8,#0f172a)"></div><span class="kicker">人工智能</span><h3>大模型走进工厂车间：智能质检的落地实践</h3><p>从“看得见”到“看得准”，AI 正在重塑制造现场。</p></article>
+      <article class="story"><div class="pic" style="background:linear-gradient(135deg,#0f766e,#164e63)"></div><span class="kicker">航天</span><h3>新一代运载火箭完成首飞，运力提升显著</h3><p>可重复使用技术验证迈出关键一步。</p></article>
+      <article class="story"><div class="pic" style="background:linear-gradient(135deg,#6d28d9,#1e1b4b)"></div><span class="kicker">芯片</span><h3>先进封装技术突破，助力算力产业升级</h3><p>多家企业加大研发投入，产业链协同加速。</p></article>
+    </div>
+  </section>
+
+  <section class="section split" id="biz" style="padding-top:0">
+    <div>
+      <div class="block-title"><h2>财经</h2><a class="more" href="#biz">更多 →</a></div>
+      <div class="mini"><div><h3>三季度经济数据出炉，消费与服务业回暖明显</h3><p class="meta">{{.Year}}-10-18</p></div><div class="pic" style="background:#c9d6e8"></div></div>
+      <div class="mini"><div><h3>跨境电商新业态带动外贸结构持续优化</h3><p class="meta">{{.Year}}-10-17</p></div><div class="pic" style="background:#e8d3c9"></div></div>
+      <div class="mini"><div><h3>绿色金融规模稳步扩大，助力低碳转型</h3><p class="meta">{{.Year}}-10-16</p></div><div class="pic" style="background:#cfe3d6"></div></div>
+    </div>
+    <div id="society">
+      <div class="block-title"><h2>社会</h2><a class="more" href="#society">更多 →</a></div>
+      <div class="mini"><div><h3>社区食堂遍地开花，“一餐热饭”温暖银发族</h3><p class="meta">{{.Year}}-10-18</p></div><div class="pic" style="background:#ead9c4"></div></div>
+      <div class="mini"><div><h3>城市“口袋公园”让居民推窗见绿</h3><p class="meta">{{.Year}}-10-17</p></div><div class="pic" style="background:#cde3c9"></div></div>
+      <div class="mini"><div><h3>乡村振兴一线：返乡青年的新农人故事</h3><p class="meta">{{.Year}}-10-15</p></div><div class="pic" style="background:#e3dcc9"></div></div>
+    </div>
+  </section>
+</main>
+
+<section class="feature" id="feature">
+  <div class="wrap">
+    <div class="pic" aria-hidden="true"></div>
+    <div><span class="kicker">深度 · 专题策划</span><h2>寻找城市的温度：二十个街区的微更新实验</h2><p>我们走进二十个正在发生变化的城市街区，记录规划师、居民与商户如何一起让老街区重新焕发生机。</p><div class="cta"><a class="btn btn-primary" style="background:#c8102e" href="#feature">阅读专题</a></div></div>
+  </div>
+</section>
+
+<section class="section" id="photo">
+  <div class="wrap">
+    <div class="block-title"><h2>图片</h2><a class="more" href="#photo">更多 →</a></div>
+    <div class="photo-row">
+      <div class="pic" style="background:linear-gradient(135deg,#0f172a,#334155)"><span>晨光中的跨海大桥</span></div>
+      <div class="pic" style="background:linear-gradient(135deg,#7c2d12,#c2410c)"><span>金秋稻田</span></div>
+      <div class="pic" style="background:linear-gradient(135deg,#14532d,#4d7c0f)"><span>山间茶园</span></div>
+      <div class="pic" style="background:linear-gradient(135deg,#1e3a8a,#0e7490)"><span>港口夜景</span></div>
+      <div class="pic" style="background:linear-gradient(135deg,#4c1d95,#9d174d)"><span>城市灯光秀</span></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" id="culture">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about"><a class="logo" href="#" style="color:#fff">{{.Title}}</a><p>坚持真实、准确、客观、公正的新闻原则。</p></div>
+      <div><h4>频道</h4><ul><li>科技</li><li>财经</li><li>社会</li><li>国际</li></ul></div>
+      <div><h4>栏目</h4><ul><li>深度</li><li>评论</li><li>图片</li><li>视频</li></ul></div>
+      <div><h4>关于</h4><ul><li>关于我们</li><li>广告服务</li><li>加入我们</li><li>联系我们</li></ul></div>
+      <div><h4>服务</h4><ul><li>新闻爆料</li><li>版权合作</li><li>违法和不良信息举报</li><li>news@{{.Domain}}</li></ul></div>
+    </div>
+    <div class="legal"><div>© {{.Year}} {{.Title}} 版权所有 · 未经授权禁止转载</div><div><span>用户协议</span><span>隐私政策</span></div></div>
+  </div>
+</footer>
+</body>
+</html>

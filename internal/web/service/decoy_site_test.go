@@ -29,11 +29,11 @@ func TestSiteAssociationChoosesSupportedMode(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			raw, _ := json.Marshal(map[string]any{"network": tc.network, "security": tc.security, "website": map[string]any{"enabled": true, "siteId": 7, "mode": "auto"}, "xhttpSettings": map[string]any{"path": "/connect/"}})
 			ib := &model.Inbound{Protocol: model.Protocol(tc.protocol), Port: tc.port, StreamSettings: string(raw)}
-			if err := applySiteProfile(ib, website.Config{SiteID: 7, Enabled: true, Domain: "site.example.com", Port: 443, Template: "journal"}); err != nil {
+			if err := applySiteProfile(ib, website.Config{SiteID: 7, Enabled: true, Domain: "site.example.com", Port: 443, Template: "news"}); err != nil {
 				t.Fatal(err)
 			}
 			stream, _ := website.Parse(ib.StreamSettings)
-			if stream.Website.Mode != tc.want || stream.Website.Template != "journal" {
+			if stream.Website.Mode != tc.want || stream.Website.Template != "news" {
 				t.Fatalf("wrong association: %+v", stream.Website)
 			}
 			if tc.want == "independent" && strings.Contains(ib.StreamSettings, `"security":"none"`) == false && tc.security == "none" {
@@ -50,7 +50,7 @@ func TestSiteProfileCRUDAndReferenceProtection(t *testing.T) {
 	defer isNeedXrayReconcile.Store(previousReconcile)
 	setupSettingTestDB(t)
 	svc := &DecoySiteService{}
-	row := &model.DecoySite{Name: "Journal", Config: `{"domain":"site.example.com","autoTLS":true,"template":"journal","port":443}`}
+	row := &model.DecoySite{Name: "News", Config: `{"domain":"site.example.com","autoTLS":true,"template":"news","port":443}`}
 	if err := svc.Save(row); err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func TestSiteProfileCRUDAndReferenceProtection(t *testing.T) {
 	if err := svc.Delete(row.Id); err == nil {
 		t.Fatal("deleted a referenced website")
 	}
-	row.Config = `{"domain":"site.example.com","autoTLS":true,"template":"portfolio","title":"Updated site","port":443}`
+	row.Config = `{"domain":"site.example.com","autoTLS":true,"template":"brand","title":"Updated site","port":443}`
 	if err := svc.Save(row); err != nil {
 		t.Fatal(err)
 	}
@@ -78,7 +78,7 @@ func TestSiteProfileCRUDAndReferenceProtection(t *testing.T) {
 		t.Fatal(err)
 	}
 	linked, _ := website.Parse(saved.StreamSettings)
-	if linked.Website.Template != "portfolio" || linked.Website.Title != "Updated site" || linked.Website.Mode != "path" {
+	if linked.Website.Template != "brand" || linked.Website.Title != "Updated site" || linked.Website.Mode != "path" {
 		t.Fatalf("profile did not synchronize: %+v", linked.Website)
 	}
 	if err := database.GetDB().Delete(ib).Error; err != nil {
@@ -109,7 +109,7 @@ func TestSiteAssociationKeepsInboundCertificate(t *testing.T) {
 			tlsSettings := map[string]any{"serverName": "golden-fixture.test", "certificates": []any{map[string]any{"certificateFile": certFile, "keyFile": keyFile}}}
 			raw, _ := json.Marshal(map[string]any{"network": tc.network, "security": "tls", "tlsSettings": tlsSettings, "xhttpSettings": map[string]any{"path": "/connect/"}, "website": map[string]any{"enabled": true, "siteId": 7, "mode": "auto"}})
 			ib := &model.Inbound{Tag: "own-cert-" + tc.name, Protocol: model.Protocol(tc.protocol), Port: 443, Settings: `{"clients":[]}`, StreamSettings: string(raw), ShareAddrStrategy: "custom", ShareAddr: "golden-fixture.test"}
-			if err := applySiteProfile(ib, website.Config{SiteID: 7, Enabled: true, Domain: "site.example.com", Port: 443, Template: "journal", AutoTLS: true, Email: "a@example.com"}); err != nil {
+			if err := applySiteProfile(ib, website.Config{SiteID: 7, Enabled: true, Domain: "site.example.com", Port: 443, Template: "news", AutoTLS: true, Email: "a@example.com"}); err != nil {
 				t.Fatal(err)
 			}
 			var got struct {

@@ -2,60 +2,66 @@ package website
 
 import (
 	"bytes"
+	"embed"
 	"html/template"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 )
 
 type TemplateInfo struct {
-	ID         string `json:"id"`
-	Name       string `json:"name"`
-	Category   string `json:"category"`
-	Source     string `json:"source"`
-	License    string `json:"license"`
-	Repository string `json:"repository,omitempty"`
-	Installed  bool   `json:"installed"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Category  string `json:"category"`
+	Source    string `json:"source"`
+	License   string `json:"license"`
+	Installed bool   `json:"installed"`
 }
 
-var builtinTemplates = []TemplateInfo{
-	{ID: "studio", Name: "Independent studio", Category: "Studio", Source: "builtin", Installed: true},
-	{ID: "journal", Name: "Field notes", Category: "Blog", Source: "builtin", Installed: true},
-	{ID: "portfolio", Name: "Selected works", Category: "Portfolio", Source: "builtin", Installed: true},
-	{ID: "business", Name: "North & Co.", Category: "Business", Source: "builtin", Installed: true},
-	{ID: "docs", Name: "Knowledge garden", Category: "Documentation", Source: "builtin", Installed: true},
-	{ID: "minimal", Name: "Quiet space", Category: "Personal", Source: "builtin", Installed: true},
+type builtinTemplate struct {
+	TemplateInfo
+	Title       string
+	Description string
 }
 
-var remoteTemplates = []TemplateInfo{
-	{ID: "sb-agency", Name: "Agency", Category: "Business", Repository: "startbootstrap-agency"},
-	{ID: "sb-clean-blog", Name: "Clean Blog", Category: "Blog", Repository: "startbootstrap-clean-blog"},
-	{ID: "sb-freelancer", Name: "Freelancer", Category: "Portfolio", Repository: "startbootstrap-freelancer"},
-	{ID: "sb-landing-page", Name: "Landing Page", Category: "Landing page", Repository: "startbootstrap-landing-page"},
-	{ID: "sb-creative", Name: "Creative", Category: "Portfolio", Repository: "startbootstrap-creative"},
-	{ID: "sb-grayscale", Name: "Grayscale", Category: "Landing page", Repository: "startbootstrap-grayscale"},
-	{ID: "sb-resume", Name: "Resume", Category: "Personal", Repository: "startbootstrap-resume"},
-	{ID: "sb-business-casual", Name: "Business Casual", Category: "Business", Repository: "startbootstrap-business-casual"},
-	{ID: "sb-stylish-portfolio", Name: "Stylish Portfolio", Category: "Portfolio", Repository: "startbootstrap-stylish-portfolio"},
+// DefaultTemplate also serves sites saved before a template was chosen.
+const DefaultTemplate = "cloud"
+
+//go:embed sitetemplates
+var templateFS embed.FS
+
+var builtinPages = template.Must(template.ParseFS(templateFS, "sitetemplates/*.html", "sitetemplates/base.css"))
+
+var builtinTemplates = []builtinTemplate{
+	{TemplateInfo{ID: "cloud", Name: "云衡科技", Category: "科技云服务"}, "云衡科技", "云服务器、云数据库、对象存储、CDN 等 200 余款产品，按需购买，开箱即用。"},
+	{TemplateInfo{ID: "group", Name: "恒岳集团", Category: "集团制造业"}, "恒岳集团", "业务涵盖高端装备、新能源、新材料与智慧物流的综合性产业集团，坚持自主创新与绿色发展，服务全球 130 多个国家和地区。"},
+	{TemplateInfo{ID: "finance", Name: "汇岳资本", Category: "金融投资"}, "汇岳资本", "主要投资于高等级信用债与利率债，力争在控制回撤的前提下获取稳健收益。认购期内认购费率享 1 折优惠。"},
+	{TemplateInfo{ID: "legal", Name: "衡正律师事务所", Category: "专业服务"}, "衡正律师事务所", "在公司并购、资本市场、争议解决、知识产权与合规等领域，为境内外企业客户提供法律服务。在北京、上海、深圳、香港设有办公室。"},
+	{TemplateInfo{ID: "academy", Name: "知行学院", Category: "教育培训"}, "知行学院", "编程、设计、数据分析、产品运营等 1,100 余门课程，每门都有配套练习和助教答疑。"},
+	{TemplateInfo{ID: "brand", Name: "拾光生活", Category: "消费品牌"}, "拾光生活", "源自自然的生活方式品牌。我们挑选天然材料，与各地手艺人合作，制作温暖、耐用、好看的日常用品。"},
+	{TemplateInfo{ID: "news", Name: "观澜资讯", Category: "新闻资讯门户"}, "观澜资讯", "调研历时半年，记者走访企业、园区与社区，记录产业升级背后的人与故事，呈现城市转型中的机遇与挑战。"},
+	{TemplateInfo{ID: "docs", Name: "星枢开发者文档", Category: "开发者文档"}, "星枢", "本指南将帮助你在 5 分钟内完成 SDK 安装与初始化，并发起第一个 API 请求。"},
 }
 
 func TemplatesDir() string          { return filepath.Join(config.GetDBFolderPath(), "site-templates") }
 func TemplateRoot(id string) string { return filepath.Join(TemplatesDir(), id) }
 
 func Catalog() []TemplateInfo {
-	result := append([]TemplateInfo{}, builtinTemplates...)
-	for _, item := range remoteTemplates {
-		item.Source, item.License = "Start Bootstrap", "MIT"
-		item.Installed = templateInstalled(item.ID)
-		result = append(result, item)
+	result := make([]TemplateInfo, 0, len(builtinTemplates))
+	for _, item := range builtinTemplates {
+		info := item.TemplateInfo
+		info.Source, info.Installed = "内置模板", true
+		result = append(result, info)
 	}
 	entries, _ := os.ReadDir(TemplatesDir())
 	for _, entry := range entries {
 		if entry.IsDir() && strings.HasPrefix(entry.Name(), "custom-") && templateInstalled(entry.Name()) {
-			result = append(result, TemplateInfo{ID: entry.Name(), Name: strings.TrimPrefix(entry.Name(), "custom-"), Category: "Imported", Source: "ZIP", Installed: true})
+			result = append(result, TemplateInfo{ID: entry.Name(), Name: strings.TrimPrefix(entry.Name(), "custom-"), Category: "导入模板", Source: "ZIP", Installed: true})
 		}
 	}
 	return result
@@ -78,47 +84,54 @@ func ValidTemplate(id string) bool {
 	return false
 }
 
-var variants = map[string]string{
-	"journal":   `<p class="eyebrow">FIELD NOTES / JOURNAL</p><h1>{{.Title}}</h1><p>{{.Description}}</p><section><article><small>01 — Ideas</small><h2>Finding a little clarity</h2><p>Notes on everyday life, creative work and things worth remembering.</p></article><article><small>02 — Practice</small><h2>A slower way to build</h2><p>Small steps, useful lessons and a little more intention.</p></article></section>`,
-	"portfolio": `<p class="eyebrow">DESIGN & DIRECTION</p><h1>{{.Title}}</h1><p>{{.Description}}</p><section><article class="tile"><span>01</span><h2>Form & function</h2><p>Visual identity · Editorial</p></article><article class="tile second"><span>02</span><h2>Everyday objects</h2><p>Research · Digital design</p></article></section>`,
-	"business":  `<p class="eyebrow">INDEPENDENT THINKING. SHARED PROGRESS.</p><h1>{{.Title}}</h1><p>{{.Description}}</p><a href="#services" class="button">Discover our approach ↗</a><section id="services"><article><h2>Strategy</h2><p>Make sense of complex questions and find a clear direction.</p></article><article><h2>Craft</h2><p>Create considered experiences with care and purpose.</p></article><article><h2>Partnership</h2><p>Build lasting work through honest collaboration.</p></article></section>`,
-	"docs":      `<p class="eyebrow">A HOME FOR USEFUL KNOWLEDGE</p><h1>{{.Title}}</h1><p>{{.Description}}</p><section><article><h2>Getting started →</h2><p>Find your bearings and discover the essentials.</p></article><article><h2>Guides →</h2><p>Practical notes to help you move forward.</p></article><article><h2>Reference →</h2><p>Details, definitions and further reading.</p></article></section>`,
-	"minimal":   `<p class="eyebrow">WELCOME</p><h1>{{.Title}}<span class="dot">.</span></h1><p>{{.Description}}</p><div class="line"></div><p>Creating. Learning. Making room for what comes next.</p>`,
+func findBuiltin(id string) (builtinTemplate, bool) {
+	for _, item := range builtinTemplates {
+		if item.ID == id {
+			return item, true
+		}
+	}
+	return builtinTemplate{}, false
 }
 
 func TemplateHandler(c Config) http.Handler {
-	if c.Template == "studio" || c.Template == "" {
-		return NewHandler(c, "", "http://localhost", http.DefaultTransport)
+	id := c.Template
+	if id == "" {
+		id = DefaultTemplate
 	}
-	if body, ok := variants[c.Template]; ok {
-		if c.Title == "" {
-			c.Title = "A place for new ideas"
+	if item, ok := findBuiltin(id); ok {
+		data := struct{ Title, Description, Domain, Year string }{c.Title, c.Description, c.Domain, strconv.Itoa(time.Now().Year())}
+		if data.Title == "" {
+			data.Title = item.Title
 		}
-		if c.Description == "" {
-			c.Description = "Thoughtful projects, useful notes and an independent point of view."
+		if data.Description == "" {
+			data.Description = item.Description
 		}
-		t := template.Must(template.New("variant").Parse(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{.Title}}</title><style>
-body{margin:0;background:#f5f1e8;color:#282c27;font:17px/1.7 system-ui}header,main,footer{max-width:1120px;margin:auto;padding:28px 6%}header{border-bottom:1px solid #ccc7bb;font-weight:700}main{padding-top:90px;padding-bottom:100px}h1{font-size:clamp(42px,8vw,90px);line-height:1.05;letter-spacing:-.055em;max-width:900px;margin:26px 0}main>p{max-width:660px;white-space:pre-line}.eyebrow,small{font-size:12px;letter-spacing:.13em}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;margin-top:70px}article{border-top:1px solid;padding-top:24px}article p{font-size:15px;opacity:.75}.tile{background:#d0d7c4;min-height:230px;padding:32px;border:0}.second{background:#ddc9bd}.button{display:inline-block;margin-top:25px;background:#293c33;color:white;padding:12px 24px;text-decoration:none}.line{height:1px;background:#aaa;margin:70px 0}.dot{color:#b2693d}footer{font-size:12px;border-top:1px solid #ccc7bb}
-</style></head><body><header>{{.Title}}</header><main>` + body + `</main><footer>© {{.Title}}</footer></body></html>`))
+		if data.Domain == "" {
+			data.Domain = "example.com"
+		}
 		var buf bytes.Buffer
-		_ = t.Execute(&buf, c)
+		if err := builtinPages.ExecuteTemplate(&buf, id+".html", data); err != nil {
+			return http.NotFoundHandler()
+		}
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path != "/" {
+			if r.URL.Path != "/" && r.URL.Path != "/index.html" {
 				http.NotFound(w, r)
 				return
 			}
-			if r.Method != "GET" && r.Method != "HEAD" {
-				w.WriteHeader(405)
+			if r.Method != http.MethodGet && r.Method != http.MethodHead {
+				w.Header().Set("Allow", "GET, HEAD")
+				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 				return
 			}
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			if r.Method == "GET" {
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+			if r.Method == http.MethodGet {
 				_, _ = w.Write(buf.Bytes())
 			}
 		})
 	}
-	if ValidTemplate(c.Template) {
-		return http.FileServer(http.Dir(TemplateRoot(c.Template)))
+	if ValidTemplate(id) {
+		return http.FileServer(http.Dir(TemplateRoot(id)))
 	}
 	return http.NotFoundHandler()
 }

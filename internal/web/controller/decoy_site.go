@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/website"
@@ -21,7 +22,6 @@ func NewDecoySiteController(g *gin.RouterGroup) {
 	g.POST("/save", a.save)
 	g.POST("/del/:id", a.remove)
 	g.GET("/templates", a.templates)
-	g.POST("/templates/install", a.install)
 	g.POST("/templates/import", a.importZIP)
 	g.GET("/templates/preview/:id/*path", a.preview)
 }
@@ -70,6 +70,7 @@ func (a *DecoySiteController) save(c *gin.Context) {
 	}
 	jsonObj(c, row, err)
 }
+
 func (a *DecoySiteController) remove(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err == nil {
@@ -81,17 +82,6 @@ func (a *DecoySiteController) remove(c *gin.Context) {
 	jsonObj(c, nil, err)
 }
 func (a *DecoySiteController) templates(c *gin.Context) { jsonObj(c, website.Catalog(), nil) }
-func (a *DecoySiteController) install(c *gin.Context) {
-	var body struct {
-		ID string `json:"id" form:"id"`
-	}
-	if err := c.ShouldBind(&body); err != nil {
-		jsonObj(c, nil, err)
-		return
-	}
-	err := website.InstallTemplate(c.Request.Context(), body.ID)
-	jsonObj(c, website.Catalog(), err)
-}
 func (a *DecoySiteController) importZIP(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, website.MaxArchiveBytes+(1<<20))
 	file, err := c.FormFile("file")
@@ -117,6 +107,7 @@ func (a *DecoySiteController) importZIP(c *gin.Context) {
 	id, err := website.ImportTemplate(data)
 	jsonObj(c, gin.H{"id": id}, err)
 }
+
 func (a *DecoySiteController) preview(c *gin.Context) {
 	id := c.Param("id")
 	if !website.ValidTemplate(id) {
@@ -126,5 +117,5 @@ func (a *DecoySiteController) preview(c *gin.Context) {
 	c.Header("X-Frame-Options", "SAMEORIGIN")
 	c.Header("Content-Security-Policy", "sandbox; default-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'none'; frame-ancestors 'self'")
 	c.Request.URL.Path = c.Param("path")
-	website.TemplateHandler(website.Config{Template: id, Title: "Independent studio", Description: "A space for thoughtful projects and new ideas."}).ServeHTTP(c.Writer, c.Request)
+	website.TemplateHandler(website.Config{Template: id}).ServeHTTP(c.Writer, c.Request)
 }

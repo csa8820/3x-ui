@@ -53,7 +53,7 @@ func TestWebsiteSharedProtocols(t *testing.T) {
 			_ = listener.Close()
 			stream := map[string]any{"network": tc.network, "security": tc.security,
 				"tlsSettings": map[string]any{"alpn": []string{"http/1.1"}, "certificates": []any{map[string]any{"certificate": []string{certPEM}, "key": []string{keyPEM}}}},
-				"website":     map[string]any{"enabled": true, "mode": tc.mode, "domain": "example.com", "template": "journal", "title": "Shared site"}}
+				"website":     map[string]any{"enabled": true, "mode": tc.mode, "domain": "example.com", "template": "news", "title": "Shared site"}}
 			clientStream := map[string]any{"network": tc.network, "security": tc.security, "tlsSettings": map[string]any{"serverName": "example.com", "alpn": []string{"http/1.1"}, "pinnedPeerCertSha256": hex.EncodeToString(hash[:])}}
 			switch tc.network {
 			case "grpc":

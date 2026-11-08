@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.Title}} - 好好生活，从日常开始</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#faf8f4;--fg:#1f1d1a;--muted:#77716a;--accent:#1f1d1a;--line:#e8e3da;--line-strong:#1f1d1a;--card:#fff;--alt:#f1ece3;--icon-bg:#efe8dc;--foot-bg:#1f1d1a;--foot-fg:#b8b1a6;--radius:0;--thumb:#e9e2d5}
+.announce{background:#1f1d1a;color:#f1ece3;text-align:center;font-size:13px;padding:9px 16px;letter-spacing:.06em}
+.nav .wrap{height:76px;justify-content:space-between}
+.nav .menu{flex:1;justify-content:center}
+.logo{font-size:24px;letter-spacing:.3em;font-weight:700}
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:640px}
+.hero .copy{display:flex;flex-direction:column;justify-content:center;padding:80px 8% 80px max(24px,calc((100vw - 1200px)/2))}
+.hero h1{font-size:clamp(40px,5.6vw,76px);font-weight:300;letter-spacing:.04em;line-height:1.2}
+.hero h1 b{font-weight:800}
+.hero .lead{margin-top:24px}
+.hero .shot{background:linear-gradient(160deg,#e6d5bf,#c9ae8c);position:relative;overflow:hidden}
+.hero .shot svg{position:absolute;inset:0;width:100%;height:100%}
+.hero .shot .label{position:absolute;right:32px;bottom:32px;background:#faf8f4;padding:16px 20px;font-size:14px}
+.hero .shot .label b{display:block;font-size:18px}
+.btn-primary{box-shadow:none}
+.cat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.cat-strip a{display:block}
+.cat-strip .pic{aspect-ratio:4/5;display:grid;place-items:center;margin-bottom:14px;transition:transform .3s}
+.cat-strip a:hover .pic{transform:scale(1.02)}
+.cat-strip b{font-size:18px}
+.cat-strip span{display:block;font-size:13px;color:var(--muted)}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 20px}
+.product .pic{aspect-ratio:1/1;background:#efe9df;display:grid;place-items:center;position:relative;margin-bottom:14px}
+.product .pic em{position:absolute;top:12px;left:12px;font-style:normal;font-size:12px;background:#1f1d1a;color:#fff;padding:3px 10px}
+.product h3{font-size:16px;font-weight:600}
+.product p{color:var(--muted);font-size:13px;margin:4px 0}
+.product b{font-size:16px}
+.story{display:grid;grid-template-columns:1fr 1fr;background:var(--alt)}
+.story .pic{min-height:520px;background:linear-gradient(200deg,#b7c4b0,#7f9378);position:relative}
+.story .pic svg{position:absolute;inset:0;width:100%;height:100%}
+.story .copy{padding:80px 10%;display:flex;flex-direction:column;justify-content:center}
+.story h2{font-size:clamp(28px,3.4vw,44px);font-weight:300;margin:14px 0 22px}
+.story p{color:var(--muted);margin-bottom:14px}
+.values{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:40px}
+.values svg{width:44px;height:44px;margin:0 auto 18px}
+.values h3{font-size:19px;margin-bottom:8px}
+.values p{color:var(--muted);font-size:15px}
+.reviews .card{background:transparent;border:0;border-top:1px solid var(--line-strong);padding:28px 0 0}
+.stars{letter-spacing:4px;color:#c8913a}
+.member{background:#1f1d1a;color:#f1ece3;padding:80px 0;text-align:center}
+.member h2{font-size:clamp(28px,3.4vw,42px);font-weight:300}
+.member p{color:#b8b1a6;margin:14px 0 32px}
+.member .form{display:flex;max-width:480px;margin:0 auto;border-bottom:1px solid #6d665c}
+.member .form span{flex:1;text-align:left;padding:12px 0;color:#8a8378}
+.member .form b{padding:12px 0;letter-spacing:.2em}
+@media (max-width:980px){.hero,.story{grid-template-columns:1fr}.hero .copy{padding:64px 24px}.hero .shot{min-height:420px}.cat-strip,.products{grid-template-columns:1fr 1fr}.values{grid-template-columns:1fr}.story .pic{min-height:320px}.story .copy{padding:56px 24px}}
+</style>
+</head>
+<body>
+<div class="announce">全场满 299 元包邮 · 新会员首单立享 9 折 · 30 天无忧退换</div>
+<header class="nav">
+  <div class="wrap">
+    <nav class="menu" style="flex:none;gap:26px"><a href="#new">新品</a><a href="#shop">全部商品</a><a href="#story">品牌故事</a></nav>
+    <a class="logo" href="#">{{.Title}}</a>
+    <div class="actions" style="margin-left:0"><a class="hide-sm" href="#stores">门店</a><a class="hide-sm" href="#member">会员</a><a class="hide-sm" href="#shop">搜索</a><a href="#shop">购物袋 (0)</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="copy">
+    <span class="eyebrow">秋冬新品</span>
+    <h1 style="margin-top:16px">好好生活<br><b>从日常开始</b></h1>
+    <p class="lead">{{.Description}}</p>
+    <div class="cta"><a class="btn btn-primary" href="#new">选购新品</a><a class="btn btn-ghost" href="#story">品牌故事</a></div>
+  </div>
+  <div class="shot" aria-hidden="true">
+    <svg viewBox="0 0 600 640" preserveAspectRatio="xMidYMid slice"><rect x="0" y="470" width="600" height="170" fill="#b8996f"/><rect x="90" y="250" width="170" height="230" rx="8" fill="#f4ede2"/><rect x="110" y="220" width="130" height="40" rx="6" fill="#efe5d6"/><ellipse cx="400" cy="440" rx="110" ry="40" fill="#e9dcc8"/><path d="M320 440c0-90 30-150 80-150s80 60 80 150Z" fill="#faf6ef"/><circle cx="480" cy="140" r="60" fill="rgba(255,255,255,.35)"/></svg>
+    <div class="label"><span class="meta">本季主推</span><b>原木香氛蜡烛 ¥168</b></div>
+  </div>
+</section>
+
+<section class="section" id="new">
+  <div class="wrap">
+    <div class="section-head"><div><h2>探索系列</h2></div><a class="more" href="#shop">查看全部 →</a></div>
+    <div class="cat-strip">
+      <a href="#shop"><div class="pic" style="background:#e4d9c8"><svg viewBox="0 0 120 120" width="120"><rect x="20" y="50" width="80" height="50" rx="6" fill="#b8996f"/><rect x="28" y="36" width="64" height="20" rx="4" fill="#cdb18b"/></svg></div><b>家居软装</b><span>抱枕 · 毯子 · 收纳</span></a>
+      <a href="#shop"><div class="pic" style="background:#dfe3d8"><svg viewBox="0 0 120 120" width="120"><rect x="44" y="30" width="32" height="64" rx="6" fill="#7f9378"/><rect x="52" y="20" width="16" height="14" fill="#5f7258"/></svg></div><b>香氛蜡烛</b><span>扩香 · 蜡烛 · 香薰</span></a>
+      <a href="#shop"><div class="pic" style="background:#ece3d6"><svg viewBox="0 0 120 120" width="120"><path d="M30 50h60l-6 40H36Z" fill="#c78b5a"/><path d="M90 58c12 0 12 20 0 20" stroke="#c78b5a" stroke-width="5" fill="none"/></svg></div><b>餐厨器物</b><span>杯具 · 餐盘 · 茶器</span></a>
+      <a href="#shop"><div class="pic" style="background:#e6e1ea"><svg viewBox="0 0 120 120" width="120"><path d="M30 40h60v50H30Z" fill="#8d7fa3"/><path d="M30 40l30 20 30-20" stroke="#b6aac6" stroke-width="4" fill="none"/></svg></div><b>织物服饰</b><span>家居服 · 毛巾 · 围巾</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="shop">
+  <div class="wrap">
+    <div class="section-head"><div><h2>人气单品</h2></div></div>
+    <div class="products">
+      <article class="product"><div class="pic"><em>新品</em><svg viewBox="0 0 120 120" width="110"><rect x="44" y="30" width="32" height="64" rx="6" fill="#7f9378"/><rect x="52" y="20" width="16" height="14" fill="#5f7258"/></svg></div><h3>森林晨雾 香薰精油</h3><p>天然植物精油 · 100ml</p><b>¥ 128</b></article>
+      <article class="product"><div class="pic"><svg viewBox="0 0 120 120" width="110"><path d="M30 50h60l-6 40H36Z" fill="#c78b5a"/><path d="M90 58c12 0 12 20 0 20" stroke="#c78b5a" stroke-width="5" fill="none"/></svg></div><h3>手作粗陶马克杯</h3><p>窑变釉 · 350ml</p><b>¥ 89</b></article>
+      <article class="product"><div class="pic"><em>热卖</em><svg viewBox="0 0 120 120" width="110"><rect x="20" y="50" width="80" height="50" rx="6" fill="#b8996f"/><rect x="28" y="36" width="64" height="20" rx="4" fill="#cdb18b"/></svg></div><h3>亚麻棉混纺抱枕</h3><p>可拆洗 · 45×45cm</p><b>¥ 159</b></article>
+      <article class="product"><div class="pic"><svg viewBox="0 0 120 120" width="110"><path d="M30 40h60v50H30Z" fill="#8d7fa3"/><path d="M30 40l30 20 30-20" stroke="#b6aac6" stroke-width="4" fill="none"/></svg></div><h3>长绒棉浴巾套装</h3><p>A 类亲肤 · 三件套</p><b>¥ 239</b></article>
+      <article class="product"><div class="pic"><svg viewBox="0 0 120 120" width="110"><ellipse cx="60" cy="80" rx="40" ry="14" fill="#e0d2bd"/><path d="M28 80c0-30 14-46 32-46s32 16 32 46Z" fill="#f5efe5"/></svg></div><h3>原木香氛蜡烛</h3><p>大豆蜡 · 燃烧 50 小时</p><b>¥ 168</b></article>
+      <article class="product"><div class="pic"><svg viewBox="0 0 120 120" width="110"><circle cx="60" cy="62" r="34" fill="#d9c7ad"/><circle cx="60" cy="62" r="22" fill="#efe5d6"/></svg></div><h3>白瓷浅口餐盘</h3><p>釉下彩 · 8 英寸</p><b>¥ 69</b></article>
+      <article class="product"><div class="pic"><svg viewBox="0 0 120 120" width="110"><rect x="30" y="34" width="60" height="56" rx="4" fill="#a8b5a0"/><path d="M30 52h60" stroke="#8a9a82" stroke-width="3"/></svg></div><h3>棉麻桌面收纳盒</h3><p>可折叠 · 两件装</p><b>¥ 79</b></article>
+      <article class="product"><div class="pic"><svg viewBox="0 0 120 120" width="110"><path d="M40 30h40l8 60H32Z" fill="#c7a988"/><path d="M48 30c0-10 24-10 24 0" stroke="#a88766" stroke-width="4" fill="none"/></svg></div><h3>帆布托特包</h3><p>加厚帆布 · 大容量</p><b>¥ 99</b></article>
+    </div>
+  </div>
+</section>
+
+<section class="story" id="story">
+  <div class="pic" aria-hidden="true"><svg viewBox="0 0 600 520" preserveAspectRatio="xMidYMid slice"><path d="M0 400 Q150 330 300 380 T600 360 V520 H0Z" fill="#6c8065"/><path d="M0 440 Q160 390 320 430 T600 420 V520 H0Z" fill="#5a6d54"/><circle cx="450" cy="130" r="60" fill="rgba(255,255,255,.45)"/></svg></div>
+  <div class="copy">
+    <span class="eyebrow">品牌故事</span>
+    <h2>把自然的温度<br>带回每一个家</h2>
+    <p>我们走访各地的手艺人与原料产地，挑选天然、耐用、经得起时间考验的材料，把它们变成日常生活中真正好用的物件。</p>
+    <p>每一件产品都经过数十次打样与真实使用测试，只为在细节处给你多一分安心。</p>
+    <div class="cta"><a class="btn btn-primary" href="#story">阅读品牌故事</a></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap values">
+    <div><svg viewBox="0 0 44 44" fill="none" stroke="#1f1d1a" stroke-width="1.6"><path d="M22 6c8 6 12 13 12 20a12 12 0 0 1-24 0c0-7 4-14 12-20Z"/></svg><h3>天然材料</h3><p>优先选用可再生、可降解的天然原料。</p></div>
+    <div><svg viewBox="0 0 44 44" fill="none" stroke="#1f1d1a" stroke-width="1.6"><circle cx="22" cy="22" r="14"/><path d="M16 22l4 4 8-8"/></svg><h3>严苛品控</h3><p>每批次产品均经过第三方检测。</p></div>
+    <div><svg viewBox="0 0 44 44" fill="none" stroke="#1f1d1a" stroke-width="1.6"><path d="M8 18h28v18H8zM14 18v-6a8 8 0 0 1 16 0v6"/></svg><h3>无忧售后</h3><p>30 天无理由退换，会员专属客服。</p></div>
+  </div>
+</section>
+
+<section class="section section-alt reviews" id="stores">
+  <div class="wrap">
+    <div class="section-head"><div><h2>来自用户的评价</h2></div></div>
+    <div class="grid g3">
+      <article class="card"><div class="stars">★★★★★</div><p style="color:var(--fg);margin:12px 0">“杯子手感很温润，颜色比图片还好看，已经回购送朋友了。”</p><span class="meta">— 上海 · 林女士</span></article>
+      <article class="card"><div class="stars">★★★★★</div><p style="color:var(--fg);margin:12px 0">“香薰的味道很高级，不刺鼻，放在卧室睡得特别安稳。”</p><span class="meta">— 杭州 · 小鹿</span></article>
+      <article class="card"><div class="stars">★★★★★</div><p style="color:var(--fg);margin:12px 0">“包装用心，发货很快，门店体验也非常舒服。”</p><span class="meta">— 成都 · 周先生</span></article>
+    </div>
+  </div>
+</section>
+
+<section class="member" id="member">
+  <div class="wrap"><h2>加入会员，收获更多生活灵感</h2><p>订阅品牌通讯，第一时间获取新品发布与会员专属礼遇。</p><div class="form"><span>请输入你的邮箱地址</span><b>订阅</b></div></div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about"><a class="logo" href="#" style="color:#f1ece3">{{.Title}}</a><p>天然、耐用、好看的日常生活用品。</p></div>
+      <div><h4>购物指南</h4><ul><li>配送说明</li><li>退换政策</li><li>支付方式</li><li>常见问题</li></ul></div>
+      <div><h4>关于品牌</h4><ul><li>品牌故事</li><li>设计理念</li><li>可持续承诺</li><li>加入我们</li></ul></div>
+      <div><h4>线下门店</h4><ul><li>上海旗舰店</li><li>北京概念店</li><li>杭州生活馆</li><li>全部门店</li></ul></div>
+      <div><h4>联系我们</h4><ul><li>会员服务</li><li>企业团购</li><li>媒体合作</li><li>hello@{{.Domain}}</li></ul></div>
+    </div>
+    <div class="legal"><div>© {{.Year}} {{.Title}} 版权所有</div><div><span>用户协议</span><span>隐私政策</span></div></div>
+  </div>
+</footer>
+</body>
+</html>

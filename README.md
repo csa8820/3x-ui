@@ -46,7 +46,7 @@ Built as an enhanced fork of the original X-UI project, 3X-UI adds broader proto
 
 ## Decoy websites and templates (this fork)
 
-Manage reusable websites independently from proxy protocols. The **Websites** page includes six offline templates, a nine-item Start Bootstrap catalog with on-demand installation, ZIP import, previews, domain/certificate settings, and optional standalone listeners. Each inbound can select a website and a compatible port-sharing mode, or remain unassociated.
+Manage reusable websites independently from proxy protocols. The **Websites** page includes eight offline Chinese corporate templates (cloud, industrial group, finance, law firm, education, consumer brand, news portal, developer docs), ZIP import, previews, domain/certificate settings, and optional standalone listeners. Each inbound can select a website and a compatible port-sharing mode, or remain unassociated.
 
 HTTP transports share TLS ports by path; RAW VLESS/Trojan can use fallback, REALITY can use a local target, and other protocols can use independent website ports (including TCP/UDP port-number coexistence). Incompatible TCP combinations are rejected explicitly. No additional web server is needed.
 

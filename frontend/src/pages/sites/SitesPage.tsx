@@ -68,7 +68,7 @@ export default function SitesPage() {
     }
   }
 
-  function edit(site?: SiteRecord, template = 'studio') {
+  function edit(site?: SiteRecord, template = 'cloud') {
     setError('');
     setEditing(site?.id ?? null);
     form.resetFields();
@@ -106,21 +106,6 @@ export default function SitesPage() {
       await sites.refetch();
     } catch (e) {
       if (e instanceof Error) setError(e.message);
-    } finally {
-      setPending('');
-    }
-  }
-  async function install(id: string) {
-    setPending(id);
-    setError('');
-    try {
-      const response = await HttpUtil.post(
-        '/panel/api/sites/templates/install',
-        { id },
-        { silent: true },
-      );
-      if (!response.success) setError(response.msg);
-      else await templates.refetch();
     } finally {
       setPending('');
     }
@@ -418,67 +403,42 @@ export default function SitesPage() {
             onChange={(event) => setSearch(event.target.value)}
             placeholder={t('sites.search')}
           />
-          <Typography.Paragraph type="secondary">
-            {t('sites.catalogHelp')}{' '}
-            <Typography.Link
-              href="https://github.com/StartBootstrap"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Start Bootstrap
-            </Typography.Link>
-          </Typography.Paragraph>
+          <Typography.Paragraph type="secondary">{t('sites.catalogHelp')}</Typography.Paragraph>
           {error && <Alert type="error" title={error} />}
           <Row gutter={[16, 16]}>
             {gallery.map((item) => (
               <Col key={item.id} xs={24} sm={12} lg={8}>
                 <Card title={item.name} size="small">
-                  {item.installed ? (
-                    <div
+                  <div
+                    style={{
+                      position: 'relative',
+                      width: '100%',
+                      height: 180,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <iframe
+                      title={`${t('sites.preview')} ${item.name}`}
+                      src={templatePreviewURL(item.id)}
+                      sandbox=""
+                      loading="lazy"
                       style={{
-                        position: 'relative',
-                        width: '100%',
-                        height: 180,
-                        overflow: 'hidden',
+                        position: 'absolute',
+                        width: '360%',
+                        height: '360%',
+                        border: 0,
+                        transform: 'scale(0.2777778)',
+                        transformOrigin: 'top left',
+                        pointerEvents: 'none',
                       }}
-                    >
-                      <iframe
-                        title={`${t('sites.preview')} ${item.name}`}
-                        src={templatePreviewURL(item.id)}
-                        sandbox=""
-                        loading="lazy"
-                        style={{
-                          position: 'absolute',
-                          width: '360%',
-                          height: '360%',
-                          border: 0,
-                          transform: 'scale(0.2777778)',
-                          transformOrigin: 'top left',
-                          pointerEvents: 'none',
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        height: 150,
-                        display: 'grid',
-                        placeItems: 'center',
-                        background: '#f0f2ed',
-                        color: '#425449',
-                        fontSize: 22,
-                      }}
-                    >
-                      {item.category}
-                    </div>
-                  )}
+                    />
+                  </div>
                   <Space wrap style={{ margin: '12px 0' }}>
                     <Tag>{item.category}</Tag>
                     <Tag>{item.source}</Tag>
-                    {item.license && <Tag>{item.license}</Tag>}
                   </Space>
                   <div>
-                    {item.installed ? (
+                    <Space>
                       <Button
                         type="primary"
                         onClick={() => {
@@ -489,24 +449,10 @@ export default function SitesPage() {
                       >
                         {t('sites.useTemplate')}
                       </Button>
-                    ) : (
-                      <Space>
-                        <Button
-                          loading={pending === item.id}
-                          disabled={!!pending}
-                          onClick={() => void install(item.id)}
-                        >
-                          {t('sites.install')}
-                        </Button>
-                        <Button
-                          href={`https://startbootstrap.github.io/${item.repository}/`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {t('sites.preview')}
-                        </Button>
-                      </Space>
-                    )}
+                      <Button href={templatePreviewURL(item.id)} target="_blank" rel="noreferrer">
+                        {t('sites.preview')}
+                      </Button>
+                    </Space>
                   </div>
                 </Card>
               </Col>

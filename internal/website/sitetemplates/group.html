@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.Title}} - 官方网站</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#fff;--fg:#14213d;--muted:#5b6782;--accent:#0b4ea2;--line:#e3e8f0;--line-strong:#b9c6dc;--card:#fff;--alt:#f4f7fb;--icon-bg:#e8f0fb;--foot-bg:#0a1f44;--foot-fg:#c9d4e8;--radius:4px;--thumb:linear-gradient(135deg,#0b4ea2,#1b7fd1)}
+.topbar{background:#0a1f44;color:#a9b8d3;border:0}
+.hero{min-height:560px;display:flex;align-items:center;color:#fff;background:#163a6b}
+.hero .scene{position:absolute;inset:0;width:100%;height:100%}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{margin-top:18px;max-width:760px}
+.hero .lead{color:rgba(255,255,255,.78);margin-top:24px}
+.hero .btn-ghost{border-color:rgba(255,255,255,.45);color:#fff}
+.pager{position:absolute;left:0;right:0;bottom:36px;z-index:1}
+.pager .wrap{display:flex;gap:10px}
+.pager i{width:42px;height:3px;background:rgba(255,255,255,.3)}
+.pager i:first-child{background:#fff}
+.quick{margin-top:-60px;position:relative;z-index:2}
+.quick .grid{background:#fff;box-shadow:0 30px 60px -30px rgba(10,31,68,.35);gap:0}
+.quick .item{padding:34px 30px;border-right:1px solid var(--line)}
+.quick .item:last-child{border-right:0}
+.quick b{font-size:36px;color:var(--accent);font-weight:800}
+.quick b small{font-size:16px;margin-left:4px}
+.biz{position:relative;min-height:340px;border-radius:4px;overflow:hidden;padding:32px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff}
+.biz h3{font-size:24px}
+.biz p{color:rgba(255,255,255,.78);margin-top:8px;font-size:15px}
+.biz .num{position:absolute;top:24px;left:32px;font-size:14px;letter-spacing:.2em;opacity:.7}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.about .visual{aspect-ratio:5/4;background:var(--thumb);border-radius:4px;position:relative;overflow:hidden}
+.about .visual svg{position:absolute;inset:0;width:100%;height:100%}
+.about blockquote{margin:28px 0;padding-left:20px;border-left:3px solid var(--accent);font-size:18px;color:var(--fg)}
+.map{position:relative;border-radius:4px;background:#0a1f44;color:#fff;padding:56px;overflow:hidden}
+.map svg.dots{position:absolute;right:0;top:0;height:100%;opacity:.6}
+.map .stats{position:relative;margin-top:48px}
+.map .stat b{color:#fff}
+.map .stat span{color:#9fb2d6}
+.news-main{display:grid;grid-template-columns:1.3fr 1fr;gap:32px}
+.news-main .feature .thumb{aspect-ratio:16/9;margin-bottom:20px}
+.esg .card{border-top:3px solid var(--accent)}
+@media (max-width:980px){.about,.news-main{grid-template-columns:1fr}.quick .item{border-right:0;border-bottom:1px solid var(--line)}.map{padding:32px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap"><div>欢迎访问{{.Title}}官方网站</div><div><span>投资者关系</span><span>English</span><span>集团邮箱</span></div></div></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#" style="color:#0b4ea2"><svg viewBox="0 0 34 34" fill="none"><path d="M17 3 31 11v12L17 31 3 23V11L17 3Z" fill="#0b4ea2"/><path d="M10 21V13l7 4 7-4v8" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>{{.Title}}</a>
+    <nav class="menu"><a href="#about">走进集团</a><a href="#business">业务板块</a><a href="#innovation">科技创新</a><a href="#esg">社会责任</a><a href="#news">新闻中心</a><a href="#contact">加入我们</a></nav>
+    <div class="actions"><a class="btn btn-primary btn-sm" href="#contact">联系我们</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <svg class="scene" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="1440" height="560" fill="#163a6b"/><rect y="400" width="1440" height="160" fill="#10305a"/><g fill="#1d4a82"><rect x="760" y="250" width="180" height="150"/><rect x="960" y="210" width="120" height="190"/><rect x="1100" y="280" width="220" height="120"/><rect x="1340" y="240" width="100" height="160"/></g><g fill="#24578f"><rect x="800" y="150" width="22" height="100"/><rect x="840" y="180" width="22" height="70"/><rect x="1000" y="120" width="26" height="90"/></g><g fill="#2c639f"><path d="M1100 280l55-40 55 40 55-40 55 40z"/></g><g fill="#3b78b8" opacity=".6"><rect x="780" y="280" width="140" height="6"/><rect x="780" y="300" width="140" height="6"/><rect x="980" y="240" width="80" height="6"/><rect x="980" y="260" width="80" height="6"/><rect x="1120" y="310" width="180" height="6"/><rect x="1120" y="330" width="180" height="6"/></g><rect y="398" width="1440" height="4" fill="#0b2647"/><path d="M0 0h760v560H0z" fill="#163a6b" opacity=".55"/></svg>
+  <div class="wrap">
+    <h1>做强实业 &nbsp;服务全球</h1>
+    <p class="lead">{{.Description}}</p>
+    <div class="cta"><a class="btn btn-primary" href="#about">了解集团</a><a class="btn btn-ghost" href="#business">业务板块</a></div>
+  </div>
+  <div class="pager"><div class="wrap"><i></i><i></i><i></i></div></div>
+</section>
+
+<section class="quick">
+  <div class="wrap grid g4">
+    <div class="item"><b>60<small>年</small></b><p class="meta">深耕实业发展历程</p></div>
+    <div class="item"><b>36<small>个</small></b><p class="meta">国家和地区设有机构</p></div>
+    <div class="item"><b>82,000<small>+</small></b><p class="meta">全球员工</p></div>
+    <div class="item"><b>12,600<small>项</small></b><p class="meta">有效授权专利</p></div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap about">
+    <div>
+      <h2 style="font-size:clamp(28px,3.4vw,40px)">集团简介</h2>
+      <blockquote>创立于 1966 年，现已发展成为以高端装备、新能源、新材料和智慧物流为主业的大型产业集团。</blockquote>
+      <p style="color:var(--muted)">集团业务涵盖高端装备、新能源、新材料与智慧物流四大板块，构建起研发、制造、销售与服务一体化的全球运营体系。多年来始终坚持稳健经营与自主创新，持续推动产业升级与绿色发展。</p>
+      <div class="cta" style="margin-top:32px"><a class="btn btn-primary" href="#about">集团简介</a><a class="btn btn-ghost" href="#about">发展历程</a></div>
+    </div>
+    <div class="visual" aria-hidden="true"><svg viewBox="0 0 500 400" fill="none"><g stroke="rgba(255,255,255,.25)"><path d="M0 300 C120 250 220 330 340 270 S480 220 500 230"/><path d="M0 330 C120 280 220 360 340 300 S480 250 500 260"/><path d="M0 360 C120 310 220 390 340 330 S480 280 500 290"/></g><rect x="60" y="80" width="120" height="160" fill="rgba(255,255,255,.12)"/><rect x="200" y="40" width="100" height="200" fill="rgba(255,255,255,.18)"/><rect x="320" y="110" width="120" height="130" fill="rgba(255,255,255,.1)"/></svg></div>
+  </div>
+</section>
+
+<section class="section section-alt" id="business">
+  <div class="wrap">
+    <div class="section-head"><div><h2>四大业务板块</h2></div><p>聚焦国家战略与产业趋势，打造协同发展的产业生态。</p></div>
+    <div class="grid g4">
+      <article class="biz" style="background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(6,22,52,.85)),linear-gradient(135deg,#1b5fb5,#0a2f6b)"><span class="num">01</span><h3>高端装备</h3><p>精密制造与智能产线整体解决方案</p></article>
+      <article class="biz" style="background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(6,40,30,.85)),linear-gradient(135deg,#119c7f,#0b4f45)"><span class="num">02</span><h3>新能源</h3><p>光伏、储能与综合能源服务</p></article>
+      <article class="biz" style="background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(40,20,60,.85)),linear-gradient(135deg,#5b4bc4,#2d2170)"><span class="num">03</span><h3>新材料</h3><p>高性能复合材料与特种化工</p></article>
+      <article class="biz" style="background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(60,30,6,.85)),linear-gradient(135deg,#d0761f,#7a3a0b)"><span class="num">04</span><h3>智慧物流</h3><p>供应链管理与多式联运网络</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="innovation">
+  <div class="wrap">
+    <div class="map">
+      <svg class="dots" viewBox="0 0 400 300" aria-hidden="true"><defs><pattern id="dot" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.8" fill="#4f8fe0"/></pattern><mask id="land"><path d="M40 70c30-30 90-40 120-20s20 50 60 40 60-50 110-30 50 60 20 90-80 20-100 60-60 70-110 50-40-60-80-70-60-40-20-120Z" fill="#fff"/></mask></defs><rect width="400" height="300" fill="url(#dot)" mask="url(#land)"/></svg>
+      <h2 style="font-size:clamp(28px,3.4vw,40px);max-width:520px">全球布局</h2>
+      <p style="color:#9fb2d6;margin-top:16px;max-width:520px">在全球建立研发中心、生产基地与营销服务网络，与各地合作伙伴共同成长。</p>
+      <div class="stats">
+        <div class="stat"><b>18</b><span>全球研发中心</span></div>
+        <div class="stat"><b>45</b><span>生产制造基地</span></div>
+        <div class="stat"><b>6.8%</b><span>研发投入占营收比</span></div>
+        <div class="stat"><b>130+</b><span>服务国家和地区</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="news">
+  <div class="wrap">
+    <div class="section-head"><div><h2>新闻中心</h2></div><a class="more" href="#news">查看更多 →</a></div>
+    <div class="news-main">
+      <article class="feature"><div class="thumb" style="background:linear-gradient(135deg,#0b4ea2,#0f766e)"></div><span class="meta">{{.Year}}-10-18 · 集团要闻</span><h3 style="font-size:22px;margin-top:8px">集团新一代智能制造基地正式投产，年产能提升 30%</h3><p style="color:var(--muted);margin-top:10px">基地全面应用数字孪生与工业互联网技术，打造行业领先的绿色智慧工厂。</p></article>
+      <ul class="list">
+        <li><span>集团发布年度可持续发展报告</span><span class="meta">10-09</span></li>
+        <li><span>新能源板块签约海外大型储能项目</span><span class="meta">09-26</span></li>
+        <li><span>集团荣获年度制造业创新领军企业称号</span><span class="meta">09-14</span></li>
+        <li><span>新材料研究院与多所高校共建联合实验室</span><span class="meta">08-30</span></li>
+        <li><span>智慧物流园区二期工程顺利封顶</span><span class="meta">08-12</span></li>
+        <li><span>集团举办第十二届供应商合作伙伴大会</span><span class="meta">07-25</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt esg" id="esg">
+  <div class="wrap">
+    <div class="section-head"><div><h2>责任与可持续发展</h2></div><p>将可持续发展融入战略与运营，与社会共享发展成果。</p></div>
+    <div class="grid g3">
+      <article class="card"><h3>绿色低碳</h3><p>推进清洁能源使用与节能改造，单位产值能耗持续下降。</p></article>
+      <article class="card"><h3>员工成长</h3><p>完善培训与职业发展体系，保障员工健康与安全。</p></article>
+      <article class="card"><h3>公益行动</h3><p>持续投入教育助学、乡村振兴与应急救援等公益事业。</p></article>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" id="contact">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about"><a class="logo" href="#"><svg viewBox="0 0 34 34" fill="none"><path d="M17 3 31 11v12L17 31 3 23V11L17 3Z" fill="#3d8bfd"/><path d="M10 21V13l7 4 7-4v8" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/></svg>{{.Title}}</a><p>以实业筑基，以创新致远，致力于成为受人尊敬的世界一流企业。</p></div>
+      <div><h4>走进集团</h4><ul><li>集团简介</li><li>发展历程</li><li>企业文化</li><li>荣誉资质</li></ul></div>
+      <div><h4>业务板块</h4><ul><li>高端装备</li><li>新能源</li><li>新材料</li><li>智慧物流</li></ul></div>
+      <div><h4>投资者关系</h4><ul><li>公司公告</li><li>定期报告</li><li>公司治理</li><li>投资者服务</li></ul></div>
+      <div><h4>联系我们</h4><ul><li>人才招聘</li><li>采购与合作</li><li>媒体联络</li><li>info@{{.Domain}}</li></ul></div>
+    </div>
+    <div class="legal"><div>© {{.Year}} {{.Title}} 版权所有</div><div><span>法律声明</span><span>隐私政策</span><span>网站地图</span></div></div>
+  </div>
+</footer>
+</body>
+</html>

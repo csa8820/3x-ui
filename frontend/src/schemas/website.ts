@@ -45,7 +45,6 @@ export const TemplateInfoSchema = z.object({
   category: z.string(),
   source: z.string(),
   license: z.string(),
-  repository: z.string().optional(),
   installed: z.boolean(),
 });
 export const TemplateListSchema = z.array(TemplateInfoSchema);

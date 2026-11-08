@@ -3,7 +3,6 @@ package website
 import (
 	"archive/zip"
 	"bytes"
-	"context"
 	"io"
 	"net/http/httptest"
 	"os"
@@ -11,22 +10,6 @@ import (
 	"strings"
 	"testing"
 )
-
-func TestTemplateCatalogDownload(t *testing.T) {
-	if os.Getenv("XUI_TEST_TEMPLATE_DOWNLOAD") != "1" {
-		t.Skip("set XUI_TEST_TEMPLATE_DOWNLOAD=1 for a real catalog download")
-	}
-	t.Setenv("XUI_DB_FOLDER", t.TempDir())
-	if err := InstallTemplate(context.Background(), "sb-resume"); err != nil {
-		t.Fatal(err)
-	}
-	if !ValidTemplate("sb-resume") {
-		t.Fatal("downloaded template is not installed")
-	}
-	if _, err := os.Stat(filepath.Join(TemplateRoot("sb-resume"), "LICENSE")); err != nil {
-		t.Fatal(err)
-	}
-}
 
 func templateZIP(t *testing.T, files map[string]string) []byte {
 	t.Helper()
@@ -80,7 +63,7 @@ func TestTemplateZIPRejectsTraversalAndMissingBuild(t *testing.T) {
 }
 
 func TestBuiltinTemplateVariantsRenderEscapedContent(t *testing.T) {
-	for _, item := range builtinTemplates {
+	for _, item := range Catalog() {
 		t.Run(item.ID, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			TemplateHandler(Config{Template: item.ID, Title: "<script>bad</script>", Description: "Example"}).ServeHTTP(w, httptest.NewRequest("GET", "/", nil))
@@ -88,5 +71,40 @@ func TestBuiltinTemplateVariantsRenderEscapedContent(t *testing.T) {
 				t.Fatalf("invalid template output: %d %s", w.Code, w.Body.String())
 			}
 		})
+	}
+}
+
+// The decoy site must look like a real Chinese site and must not fetch anything
+// from third parties, which would fingerprint the server.
+func TestBuiltinTemplatesAreSelfContainedChineseSites(t *testing.T) {
+	var ids []string
+	for _, item := range Catalog() {
+		ids = append(ids, item.ID)
+		w := httptest.NewRecorder()
+		TemplateHandler(Config{Template: item.ID, Domain: "site.example.com"}).ServeHTTP(w, httptest.NewRequest("GET", "/", nil))
+		body := w.Body.String()
+		if w.Code != 200 || !strings.Contains(body, `lang="zh-CN"`) || !strings.Contains(body, item.Name) && !strings.Contains(body, "<title>") {
+			t.Fatalf("%s did not render a Chinese page: %d", item.ID, w.Code)
+		}
+		for _, external := range []string{`src="http`, `href="http`, "url(http", "@import", "<script", "<link"} {
+			if strings.Contains(body, external) {
+				t.Fatalf("%s loads an external resource via %q", item.ID, external)
+			}
+		}
+		if strings.Contains(body, "{{") || len(body) < 8000 {
+			t.Fatalf("%s rendered an incomplete page (%d bytes)", item.ID, len(body))
+		}
+	}
+	want := "cloud,group,finance,legal,academy,brand,news,docs"
+	if got := strings.Join(ids, ","); got != want {
+		t.Fatalf("built-in templates = %s, want %s", got, want)
+	}
+}
+
+func TestEmptyTemplateUsesDefaultSiteWithItsOwnName(t *testing.T) {
+	w := httptest.NewRecorder()
+	TemplateHandler(Config{}).ServeHTTP(w, httptest.NewRequest("GET", "/", nil))
+	if w.Code != 200 || !strings.Contains(w.Body.String(), "云衡科技") {
+		t.Fatalf("default template missing: %d", w.Code)
 	}
 }

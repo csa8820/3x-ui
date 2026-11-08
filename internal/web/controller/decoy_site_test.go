@@ -21,7 +21,7 @@ func TestSiteSaveAcceptsPanelFormEncoding(t *testing.T) {
 	db := database.GetDB()
 	router := gin.New()
 	NewDecoySiteController(router.Group("/sites"))
-	form := url.Values{"id": {"0"}, "name": {"Browser site"}, "config": {`{"domain":"site.example.com","autoTLS":true,"port":443,"template":"journal"}`}}
+	form := url.Values{"id": {"0"}, "name": {"Browser site"}, "config": {`{"domain":"site.example.com","autoTLS":true,"port":443,"template":"news"}`}}
 	request := httptest.NewRequest(http.MethodPost, "/sites/save", strings.NewReader(form.Encode()))
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
@@ -41,7 +41,7 @@ func TestSiteSaveAcceptsPanelFormEncoding(t *testing.T) {
 	if err := db.First(&stored, response.Obj.Id).Error; err != nil {
 		t.Fatal(err)
 	}
-	if stored.Name != "Browser site" || !strings.Contains(stored.Config, `"template":"journal"`) {
+	if stored.Name != "Browser site" || !strings.Contains(stored.Config, `"template":"news"`) {
 		t.Fatalf("wrong saved site: %+v", stored)
 	}
 }
@@ -51,7 +51,7 @@ func TestSitePreviewAllowsSameOriginFramesAndDisablesScripts(t *testing.T) {
 	router.Use(middleware.SecurityHeadersMiddleware(false))
 	NewDecoySiteController(router.Group("/sites"))
 	w := httptest.NewRecorder()
-	router.ServeHTTP(w, httptest.NewRequest("GET", "/sites/templates/preview/journal/", nil))
+	router.ServeHTTP(w, httptest.NewRequest("GET", "/sites/templates/preview/news/", nil))
 	if w.Code != 200 || w.Header().Get("X-Frame-Options") != "SAMEORIGIN" {
 		t.Fatalf("preview frame blocked: %d %v", w.Code, w.Header())
 	}

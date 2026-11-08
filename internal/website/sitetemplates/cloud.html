@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.Title}} - 云服务器_云数据库_对象存储_CDN</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#fff;--fg:#181818;--muted:#5f6670;--accent:#0052d9;--line:#e7e8eb;--line-strong:#c5c9d0;--card:#fff;--alt:#f3f5f8;--icon-bg:#eaf1fd;--foot-bg:#1d2129;--foot-fg:#a3a9b3;--radius:2px;--thumb:#eef2f8}
+body{font-size:14px;line-height:1.7}
+.wrap{width:min(1280px,100% - 48px)}
+.topbar{background:#f3f5f8;border:0;font-size:12px}
+.topbar a+a{margin-left:18px}
+.nav{background:#fff}
+.nav .wrap{height:60px;gap:32px}
+.logo{font-size:19px;letter-spacing:0}
+.logo svg{width:28px;height:28px}
+.menu{gap:26px;font-size:14px}
+.menu a{opacity:1;color:#2b2f36}
+.nav .search{width:240px;height:32px;border:1px solid var(--line);border-radius:2px;display:flex;align-items:center;padding:0 10px;color:#9aa0a8;font-size:13px;justify-content:space-between}
+.nav .actions a{color:#2b2f36}
+.btn{height:36px;padding:0 20px;font-size:14px;border-radius:2px;font-weight:500}
+.btn-primary{box-shadow:none}
+.btn:hover{transform:none;filter:brightness(1.06)}
+.banner{background:#e9f0fc;position:relative}
+.banner .wrap{display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;min-height:380px;padding:40px 0}
+.banner .kv h1{font-size:40px;font-weight:600;letter-spacing:0;line-height:1.35}
+.banner .kv .sub{font-size:16px;color:#3c4350;margin:14px 0 6px}
+.banner .kv .price{font-size:15px;color:#3c4350}
+.banner .kv .price b{font-size:34px;color:#e54545;font-weight:700;margin:0 2px}
+.banner .kv .cta{margin-top:26px;gap:12px}
+.banner .art{height:300px;position:relative}
+.banner .art svg{width:100%;height:100%}
+.dots{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px}
+.dots i{width:24px;height:3px;background:rgba(0,82,217,.25)}
+.dots i.on{background:var(--accent)}
+.entries{position:relative;margin-top:-34px;z-index:2}
+.entries .wrap{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;box-shadow:0 6px 24px rgba(23,40,74,.08);border:1px solid var(--line)}
+.entries a{padding:20px 22px;border-right:1px solid var(--line);display:block}
+.entries a:last-child{border-right:0}
+.entries b{font-size:15px;display:block}
+.entries span{color:var(--muted);font-size:13px}
+.entries a:hover b{color:var(--accent)}
+h2.title{font-size:26px;font-weight:600;text-align:center;margin-bottom:8px}
+p.subtitle{text-align:center;color:var(--muted);margin-bottom:32px}
+.section{padding:64px 0}
+.hot{display:grid;grid-template-columns:220px 1fr;border:1px solid var(--line)}
+.hot .cats{background:#f7f8fa;border-right:1px solid var(--line)}
+.hot .cats li{padding:13px 22px;font-size:14px;color:#3c4350;border-left:2px solid transparent}
+.hot .cats li.on{background:#fff;color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.hot .items{display:grid;grid-template-columns:repeat(3,1fr)}
+.hot .item{padding:22px 24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.hot .item:nth-child(3n){border-right:0}
+.hot .item:nth-last-child(-n+3){border-bottom:0}
+.hot .item h3{font-size:16px;font-weight:600;margin:0 0 6px;display:flex;align-items:center;gap:8px}
+.hot .item h3 em{font-style:normal;font-size:11px;color:#e54545;border:1px solid #f3b4b4;padding:0 4px;line-height:16px;font-weight:500}
+.hot .item p{color:var(--muted);font-size:13px;min-height:44px}
+.hot .item a{color:var(--accent);font-size:13px}
+.offers{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.offer{border:1px solid var(--line);background:#fff;padding:22px 20px;display:flex;flex-direction:column}
+.offer .tag-new{align-self:flex-start;background:#fff1f0;color:#e54545;font-size:12px;padding:0 6px;margin-bottom:10px}
+.offer h3{font-size:16px;font-weight:600;margin:0}
+.offer .spec{color:var(--muted);font-size:13px;margin:8px 0 14px;line-height:1.9}
+.offer .cost{margin-top:auto;display:flex;align-items:baseline;gap:6px;border-top:1px dashed var(--line);padding-top:14px}
+.offer .cost b{font-size:26px;color:#e54545}
+.offer .cost s{color:#9aa0a8;font-size:12px}
+.offer .btn{margin-top:14px;width:100%}
+.scenes{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.scene{background:#fff;border:1px solid var(--line);padding:24px}
+.scene h3{font-size:16px;margin:0 0 10px;font-weight:600}
+.scene ul li{font-size:13px;color:var(--muted);padding:3px 0}
+.scene ul li::before{content:"· ";color:var(--accent)}
+.scene a{display:inline-block;margin-top:14px;color:var(--accent);font-size:13px}
+.trust{display:grid;grid-template-columns:repeat(4,1fr);text-align:center}
+.trust div{padding:10px;border-right:1px solid var(--line)}
+.trust div:last-child{border-right:0}
+.trust b{display:block;font-size:30px;font-weight:600;color:var(--accent)}
+.trust span{color:var(--muted)}
+.cust{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-top:36px}
+.cust span{height:72px;display:grid;place-items:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line);color:#8b919b;font-weight:600;font-size:15px}
+.notice{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.notice h3{font-size:16px;font-weight:600;padding-bottom:10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.notice h3 a{font-size:13px;font-weight:400;color:var(--muted)}
+.notice li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
+.notice li span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notice li .meta{flex:none}
+.reg{background:#0052d9;color:#fff}
+.reg .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:30px 0;flex-wrap:wrap}
+.reg h2{font-size:22px;font-weight:500}
+.reg .btn{background:#fff;color:#0052d9}
+.footer{font-size:13px;padding:48px 0 28px}
+.footer .promise{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-bottom:28px;margin-bottom:36px;border-bottom:1px solid rgba(255,255,255,.08);color:#d0d4da;font-size:14px}
+.footer h4{font-size:14px;color:#e5e7eb;font-weight:500}
+@media (max-width:1100px){.nav .search{display:none}}
+@media (max-width:980px){.banner .wrap{grid-template-columns:1fr}.banner .art{display:none}.entries .wrap,.offers,.scenes{grid-template-columns:1fr 1fr}.hot{grid-template-columns:1fr}.hot .cats{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}.hot .cats li{white-space:nowrap}.hot .items{grid-template-columns:1fr 1fr}.notice{grid-template-columns:1fr}.cust{grid-template-columns:repeat(3,1fr)}.footer .promise{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.entries .wrap,.offers,.scenes,.hot .items,.trust{grid-template-columns:1fr}.trust div{border-right:0;border-bottom:1px solid var(--line)}.banner .kv h1{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap"><div>新用户注册即可领取代金券礼包</div><div><a href="#notice">公告</a><a href="#docs">文档</a><a href="#support">备案</a><a href="#support">工单</a><a href="#support">联系销售</a></div></div></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="4" fill="#0052d9"/><path d="M7 18.5a4 4 0 0 1 .9-7.9A6 6 0 0 1 19.4 11a3.8 3.8 0 0 1 .6 7.5H7Z" fill="#fff"/></svg>{{.Title}}</a>
+    <nav class="menu"><a href="#act">最新活动</a><a href="#products">产品</a><a href="#scenes">解决方案</a><a href="#offers">定价</a><a href="#trust">客户与合作伙伴</a><a href="#docs">文档与支持</a><a href="#about">了解{{.Title}}</a></nav>
+    <div class="actions"><span class="search hide-sm">搜索产品、文档 <span>⌕</span></span><a class="hide-sm" href="#about">控制台</a><a class="hide-sm" href="#about">登录</a><a class="btn btn-primary" href="#reg">免费注册</a></div>
+  </div>
+</header>
+
+<section class="banner" id="act">
+  <div class="wrap">
+    <div class="kv">
+      <h1>年终特惠<br>云服务器限时抢购</h1>
+      <p class="sub">{{.Description}}</p>
+      <p class="price">2核2G 轻量应用服务器 新用户首年 <b>¥68</b>起</p>
+      <div class="cta"><a class="btn btn-primary" href="#offers">立即抢购</a><a class="btn btn-ghost" href="#offers">查看活动规则</a></div>
+    </div>
+    <div class="art" aria-hidden="true">
+      <svg viewBox="0 0 420 300" fill="none">
+        <rect x="70" y="40" width="200" height="56" rx="4" fill="#fff" stroke="#c9d8f5"/><rect x="88" y="58" width="22" height="22" rx="2" fill="#0052d9"/><rect x="122" y="60" width="90" height="8" rx="2" fill="#c9d8f5"/><rect x="122" y="74" width="60" height="6" rx="2" fill="#dfe7f6"/><circle cx="248" cy="68" r="5" fill="#2ba471"/>
+        <rect x="70" y="110" width="200" height="56" rx="4" fill="#fff" stroke="#c9d8f5"/><rect x="88" y="128" width="22" height="22" rx="2" fill="#2f74e6"/><rect x="122" y="130" width="110" height="8" rx="2" fill="#c9d8f5"/><rect x="122" y="144" width="70" height="6" rx="2" fill="#dfe7f6"/><circle cx="248" cy="138" r="5" fill="#2ba471"/>
+        <rect x="70" y="180" width="200" height="56" rx="4" fill="#fff" stroke="#c9d8f5"/><rect x="88" y="198" width="22" height="22" rx="2" fill="#5b8ff0"/><rect x="122" y="200" width="80" height="8" rx="2" fill="#c9d8f5"/><rect x="122" y="214" width="56" height="6" rx="2" fill="#dfe7f6"/><circle cx="248" cy="208" r="5" fill="#e3a23a"/>
+        <path d="M270 68h50v140h-50M320 138h40" stroke="#9fb8e8" stroke-dasharray="4 4"/>
+        <rect x="350" y="112" width="52" height="52" rx="26" fill="#0052d9"/><path d="M366 138h20M376 128v20" stroke="#fff" stroke-width="3"/>
+      </svg>
+    </div>
+  </div>
+  <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
+</section>
+
+<section class="entries">
+  <div class="wrap">
+    <a href="#offers"><b>新用户专区</b><span>精选产品首购低至 1 折</span></a>
+    <a href="#offers"><b>免费试用中心</b><span>40+ 款产品可免费体验</span></a>
+    <a href="#scenes"><b>企业上云</b><span>专属顾问 1 对 1 规划</span></a>
+    <a href="#docs"><b>备案服务</b><span>免费备案，最快 3 天完成</span></a>
+  </div>
+</section>
+
+<section class="section" id="products">
+  <div class="wrap">
+    <h2 class="title">热门产品</h2>
+    <p class="subtitle">覆盖计算、存储、网络、数据库、安全等 200 余款云产品</p>
+    <div class="hot">
+      <ul class="cats"><li class="on">计算</li><li>容器与中间件</li><li>存储</li><li>数据库</li><li>网络与 CDN</li><li>安全</li><li>大数据</li><li>人工智能</li></ul>
+      <div class="items">
+        <div class="item"><h3>云服务器 ECS<em>热销</em></h3><p>安全可靠、弹性伸缩的计算服务，支持按量与包年包月计费。</p><a href="#offers">立即选购 ›</a></div>
+        <div class="item"><h3>轻量应用服务器</h3><p>开箱即用，内置常用应用镜像，适合建站与开发测试。</p><a href="#offers">立即选购 ›</a></div>
+        <div class="item"><h3>GPU 云服务器<em>新品</em></h3><p>提供多种 GPU 规格，适用于模型训练、推理与图形渲染。</p><a href="#offers">了解详情 ›</a></div>
+        <div class="item"><h3>弹性伸缩</h3><p>根据业务负载自动调整实例数量，降低闲置成本。</p><a href="#offers">了解详情 ›</a></div>
+        <div class="item"><h3>专属宿主机</h3><p>独享物理服务器资源，满足合规与高性能需求。</p><a href="#offers">了解详情 ›</a></div>
+        <div class="item"><h3>批量计算</h3><p>面向大规模并行计算任务的调度与执行服务。</p><a href="#offers">了解详情 ›</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="offers" style="background:var(--alt)">
+  <div class="wrap">
+    <h2 class="title">新用户专享</h2>
+    <p class="subtitle">每个实名认证账号限购 1 次，以下价格均为首年价格</p>
+    <div class="offers">
+      <div class="offer"><span class="tag-new">限时 3.5 折</span><h3>轻量应用服务器</h3><div class="spec">2核 2GB · 50GB SSD 云盘<br>峰值带宽 3Mbps · 月流量 300GB</div><div class="cost"><b>¥68</b><span>/年</span><s>¥198/年</s></div><a class="btn btn-primary" href="#reg">立即购买</a></div>
+      <div class="offer"><span class="tag-new">热销</span><h3>云服务器 ECS 标准型</h3><div class="spec">2核 4GB · 40GB 系统盘<br>固定带宽 5Mbps · 多地域可选</div><div class="cost"><b>¥199</b><span>/年</span><s>¥1,026/年</s></div><a class="btn btn-primary" href="#reg">立即购买</a></div>
+      <div class="offer"><span class="tag-new">新客专享</span><h3>云数据库 MySQL</h3><div class="spec">1核 2GB · 50GB 存储<br>双节点高可用 · 自动备份</div><div class="cost"><b>¥99</b><span>/年</span><s>¥720/年</s></div><a class="btn btn-primary" href="#reg">立即购买</a></div>
+      <div class="offer"><span class="tag-new">特惠</span><h3>对象存储资源包</h3><div class="spec">标准存储容量 100GB<br>适用于图片、视频与备份文件</div><div class="cost"><b>¥9.9</b><span>/年</span><s>¥36/年</s></div><a class="btn btn-primary" href="#reg">立即购买</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="scenes">
+  <div class="wrap">
+    <h2 class="title">行业解决方案</h2>
+    <p class="subtitle">结合行业实践，提供从规划、迁移到运维的完整方案</p>
+    <div class="scenes">
+      <div class="scene"><h3>网站建设</h3><ul><li>企业官网与电商网站</li><li>小程序与 App 后端</li><li>一键部署常用建站系统</li></ul><a href="#reg">查看方案 ›</a></div>
+      <div class="scene"><h3>音视频与直播</h3><ul><li>低延迟直播分发</li><li>点播转码与存储</li><li>实时音视频通话</li></ul><a href="#reg">查看方案 ›</a></div>
+      <div class="scene"><h3>游戏行业</h3><ul><li>全球同服与就近接入</li><li>抗 DDoS 高防</li><li>开服弹性扩容</li></ul><a href="#reg">查看方案 ›</a></div>
+      <div class="scene"><h3>零售电商</h3><ul><li>大促流量弹性承载</li><li>订单与会员数据库</li><li>图片加速与内容审核</li></ul><a href="#reg">查看方案 ›</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="trust" style="background:var(--alt)">
+  <div class="wrap">
+    <div class="trust">
+      <div><b>27</b><span>个地域</span></div>
+      <div><b>70+</b><span>个可用区</span></div>
+      <div><b>2,800+</b><span>个 CDN 加速节点</span></div>
+      <div><b>7×24</b><span>小时技术支持</span></div>
+    </div>
+    <div class="cust"><span>北辰物流</span><span>青禾教育</span><span>远帆游戏</span><span>嘉木零售</span><span>启明医疗</span><span>恒信制造</span><span>云杉传媒</span><span>星河出行</span><span>万象地产</span><span>瑞丰农业</span><span>海川能源</span><span>同舟金融</span></div>
+  </div>
+</section>
+
+<section class="section" id="notice">
+  <div class="wrap notice" id="docs">
+    <div><h3>最新公告 <a href="#notice">更多</a></h3><ul>
+      <li><span>关于部分地域云服务器底层硬件升级维护的通知</span><span class="meta">10-20</span></li>
+      <li><span>对象存储低频存储类型价格调整说明</span><span class="meta">10-15</span></li>
+      <li><span>云数据库 MySQL 8.0 新增小版本发布</span><span class="meta">10-09</span></li>
+      <li><span>国庆假期期间备案审核安排公告</span><span class="meta">09-26</span></li>
+    </ul></div>
+    <div><h3>产品动态 <a href="#notice">更多</a></h3><ul>
+      <li><span>GPU 云服务器新增推理型实例规格</span><span class="meta">10-18</span></li>
+      <li><span>容器服务支持节点池自动修复</span><span class="meta">10-12</span></li>
+      <li><span>CDN 新增 HTTP/3 协议支持</span><span class="meta">10-05</span></li>
+      <li><span>负载均衡支持按带宽包计费</span><span class="meta">09-28</span></li>
+    </ul></div>
+    <div><h3>帮助文档 <a href="#docs">更多</a></h3><ul>
+      <li><span>如何快速创建一台云服务器</span><span class="meta">入门</span></li>
+      <li><span>使用 SSH 密钥登录 Linux 实例</span><span class="meta">指南</span></li>
+      <li><span>网站备案流程与所需材料</span><span class="meta">备案</span></li>
+      <li><span>云服务器无法远程连接排查方法</span><span class="meta">排障</span></li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="reg" id="reg">
+  <div class="wrap"><h2>注册即可领取新人代金券，开启上云第一步</h2><a class="btn" href="#reg">免费注册</a></div>
+</section>
+
+<footer class="footer" id="about">
+  <div class="wrap" id="support">
+    <div class="promise"><span>✓ 5 天无理由退款</span><span>✓ 7×24 小时售后支持</span><span>✓ 1 对 1 专属顾问</span><span>✓ 服务可用性赔付承诺</span></div>
+    <div class="cols">
+      <div class="about"><a class="logo" href="#" style="color:#e5e7eb">{{.Title}}</a><p>为企业与开发者提供稳定、安全、易用的云计算服务。</p></div>
+      <div><h4>热门产品</h4><ul><li>云服务器 ECS</li><li>轻量应用服务器</li><li>云数据库 MySQL</li><li>对象存储</li><li>内容分发网络 CDN</li></ul></div>
+      <div><h4>支持与服务</h4><ul><li>文档中心</li><li>价格计算器</li><li>提交工单</li><li>服务健康状态</li><li>备案服务</li></ul></div>
+      <div><h4>账户与计费</h4><ul><li>账户管理</li><li>充值与发票</li><li>计费说明</li><li>退款规则</li></ul></div>
+      <div><h4>关于我们</h4><ul><li>公司介绍</li><li>新闻动态</li><li>加入我们</li><li>合作伙伴</li><li>service@{{.Domain}}</li></ul></div>
+    </div>
+    <div class="legal"><div>© {{.Year}} {{.Title}} 版权所有</div><div><span>服务协议</span><span>隐私政策</span><span>法律声明</span></div></div>
+  </div>
+</footer>
+</body>
+</html>

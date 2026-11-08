@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.Title}} - 专业的资产管理与财富服务</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#fbfaf7;--fg:#101c33;--muted:#5d6678;--accent:#b8893b;--on-accent:#101c33;--line:#e6e1d6;--line-strong:#cdbf9f;--card:#fff;--alt:#f3f0e9;--icon-bg:#f5ecd9;--foot-bg:#0c1628;--foot-fg:#b7bfcd;--radius:2px;--thumb:linear-gradient(135deg,#13254a,#0c1628)}
+body{font-family:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",-apple-system,"PingFang SC","Microsoft YaHei",serif}
+.menu,.btn,.meta,.stat span,.lead,.card p,.footer{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+.nav{background:#0c1628;color:#fff;border:0}
+.nav .menu{color:#d7dce6}
+.logo{color:#fff;font-size:21px;letter-spacing:.12em}
+.hero{background:#0c1628;color:#fff;padding:110px 0 0}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:end}
+.hero h1{margin-top:18px;font-weight:600;letter-spacing:.02em}
+.hero h1 span{color:#d8b26a}
+.hero .lead{color:#aeb7c8;margin-top:26px}
+.hero .btn-ghost{border-color:rgba(255,255,255,.3);color:#fff}
+.hero .panel{background:#13213c;border:1px solid rgba(216,178,106,.25);padding:32px;margin-bottom:-60px;position:relative;z-index:2;box-shadow:0 40px 80px -40px rgba(0,0,0,.6)}
+.hero .panel h3{font-size:16px;color:#d8b26a;letter-spacing:.12em;font-weight:600}
+.idx{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:22px}
+.idx div{padding:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.idx b{display:block;font-size:22px;font-family:-apple-system,"PingFang SC",sans-serif}
+.idx .up{color:#e05a5a;font-size:13px}.idx .down{color:#3fb37f;font-size:13px}
+.idx span{font-size:13px;color:#8f9ab0}
+.spark{margin-top:18px;height:90px}
+.trust{padding:110px 0 64px;border-bottom:1px solid var(--line)}
+.trust .stat b{color:var(--fg);font-weight:600}
+.trust .stat{border-top:2px solid var(--accent);padding-top:18px}
+.svc{padding:40px 32px;border-top:3px solid transparent}
+.svc:hover{border-top-color:var(--accent)}
+.svc .no{font-size:42px;color:#e2d4b4;font-weight:600;line-height:1}
+.report{display:grid;grid-template-columns:120px 1fr auto;gap:24px;align-items:center;padding:24px 0;border-bottom:1px solid var(--line)}
+.report .cover{height:150px;background:var(--thumb);display:flex;align-items:flex-end;padding:12px;color:#d8b26a;font-size:12px;letter-spacing:.1em}
+.report h3{font-size:20px;font-weight:600}
+.report p{color:var(--muted);font-size:14px;margin-top:8px;font-family:-apple-system,"PingFang SC",sans-serif}
+.funds{width:100%;min-width:760px;border-collapse:collapse;font-family:-apple-system,"PingFang SC",sans-serif;font-size:14px}.funds th{text-align:left;font-weight:500;color:var(--muted);padding:12px 14px;border-bottom:2px solid var(--fg)}.funds td{padding:16px 14px;border-bottom:1px solid var(--line)}.funds td b{display:block;font-size:15px}.funds td span{font-size:12px;color:var(--muted)}.funds .up{color:#d23b3b}.funds .down{color:#2a9d6a}.funds a{color:var(--accent)}
+.risk{background:#f3f0e9;border-left:3px solid var(--accent);padding:28px 32px;font-size:14px;color:var(--muted);font-family:-apple-system,"PingFang SC",sans-serif}
+.risk b{color:var(--fg)}
+@media (max-width:980px){.hero .wrap{grid-template-columns:1fr}.hero .panel{margin-bottom:-40px}.report{grid-template-columns:90px 1fr}.report .btn{display:none}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><svg viewBox="0 0 34 34" fill="none"><rect x="1" y="1" width="32" height="32" stroke="#d8b26a" stroke-width="1.5"/><path d="M9 24V12l8 7 8-7v12" stroke="#d8b26a" stroke-width="2"/></svg>{{.Title}}</a>
+    <nav class="menu"><a href="#wealth">财富管理</a><a href="#institution">机构业务</a><a href="#research">研究洞察</a><a href="#about">关于我们</a><a href="#ir">信息披露</a></nav>
+    <div class="actions"><a class="hide-sm" href="#about" style="color:#d7dce6">客户登录</a><a class="btn btn-primary btn-sm" href="#contact">预约顾问</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div style="padding-bottom:110px">
+      <span class="tag" style="background:rgba(216,178,106,.15);color:#d8b26a">新发基金</span>
+      <h1>汇岳稳健增利债券<br><span>正在发售</span></h1>
+      <p class="lead">{{.Description}}</p>
+      <div class="cta"><a class="btn btn-primary" href="#funds">查看产品详情</a><a class="btn btn-ghost" href="#ir">阅读招募说明书</a></div>
+    </div>
+    <aside class="panel" aria-hidden="true">
+      <h3>市场概览</h3>
+      <div class="idx">
+        <div><span>综合指数</span><b>3,286.42</b><em class="up">+0.86%</em></div>
+        <div><span>成份指数</span><b>10,512.37</b><em class="up">+1.12%</em></div>
+        <div><span>国债收益率</span><b>2.18%</b><em class="down">-0.03</em></div>
+        <div><span>美元指数</span><b>103.65</b><em class="down">-0.21%</em></div>
+      </div>
+      <svg class="spark" viewBox="0 0 300 90" preserveAspectRatio="none"><path d="M0 70 L30 62 L60 66 L90 48 L120 52 L150 36 L180 42 L210 28 L240 32 L270 18 L300 22" fill="none" stroke="#d8b26a" stroke-width="2"/><path d="M0 70 L30 62 L60 66 L90 48 L120 52 L150 36 L180 42 L210 28 L240 32 L270 18 L300 22 V90 H0Z" fill="rgba(216,178,106,.12)"/></svg>
+      <p style="font-size:12px;color:#6f7a90;margin-top:8px">数据仅供展示，不构成投资建议</p>
+    </aside>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap stats">
+    <div class="stat"><b>2,860 亿</b><span>资产管理规模（元）</span></div>
+    <div class="stat"><b>120 万+</b><span>服务个人与机构客户</span></div>
+    <div class="stat"><b>160+</b><span>投研团队成员</span></div>
+    <div class="stat"><b>21 年</b><span>穿越周期的投资经验</span></div>
+  </div>
+</section>
+
+<section class="section" id="wealth">
+  <div class="wrap">
+    <div class="section-head"><div><h2>全方位的金融服务</h2></div><p>以专业投研为基础，为个人、家庭与机构客户提供定制化的资产配置方案。</p></div>
+    <div class="grid g4">
+      <article class="card svc"><div class="no">01</div><h3>私人财富管理</h3><p>围绕家庭生命周期规划资产配置，兼顾增值、保障与传承。</p></article>
+      <article class="card svc"><div class="no">02</div><h3>公募基金</h3><p>覆盖权益、固收、混合与指数等多元产品，满足不同风险偏好。</p></article>
+      <article class="card svc" id="institution"><div class="no">03</div><h3>机构资产管理</h3><p>为养老金、保险资金与企业年金提供专户与委托投资服务。</p></article>
+      <article class="card svc"><div class="no">04</div><h3>家族办公室</h3><p>整合法律、税务与信托资源，提供综合性家族财富解决方案。</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="research">
+  <div class="wrap">
+    <div class="section-head"><div><h2>研究与洞察</h2></div><a class="more" href="#research">全部研究报告 →</a></div>
+    <div class="report"><div class="cover">宏观策略</div><div><span class="meta">{{.Year}} 年 10 月 · 宏观研究部</span><h3>四季度宏观经济展望：结构性机会与稳健配置</h3><p>从增长、通胀与政策三个维度研判经济走势，提出多资产配置建议。</p></div><a class="btn btn-ghost btn-sm" href="#research">阅读全文</a></div>
+    <div class="report"><div class="cover" style="background:linear-gradient(135deg,#3a2c12,#13254a)">行业研究</div><div><span class="meta">{{.Year}} 年 9 月 · 行业研究部</span><h3>高端制造产业链深度报告：国产替代进入加速期</h3><p>梳理产业链关键环节的竞争格局与成长空间，筛选具备长期竞争力的企业。</p></div><a class="btn btn-ghost btn-sm" href="#research">阅读全文</a></div>
+    <div class="report"><div class="cover" style="background:linear-gradient(135deg,#0f3b37,#13254a)">固定收益</div><div><span class="meta">{{.Year}} 年 9 月 · 固收研究部</span><h3>利率中枢下移背景下的债券投资策略</h3><p>分析收益率曲线变化与信用利差走势，探讨久期与信用的平衡之道。</p></div><a class="btn btn-ghost btn-sm" href="#research">阅读全文</a></div>
+  </div>
+</section>
+
+<section class="section" id="funds">
+  <div class="wrap">
+    <div class="section-head"><div><h2>热门基金</h2></div><a class="more" href="#funds">全部产品 →</a></div>
+    <div style="overflow-x:auto">
+    <table class="funds">
+      <thead><tr><th>基金名称</th><th>类型</th><th>单位净值</th><th>日涨跌幅</th><th>近一年</th><th>风险等级</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><b>汇岳稳健增利债券A</b><span>008216</span></td><td>债券型</td><td>1.2853</td><td class="up">+0.04%</td><td class="up">+4.62%</td><td>R2 中低</td><td><a href="#funds">详情</a></td></tr>
+        <tr><td><b>汇岳价值精选混合</b><span>005731</span></td><td>混合型</td><td>2.4417</td><td class="down">-0.38%</td><td class="up">+12.85%</td><td>R3 中</td><td><a href="#funds">详情</a></td></tr>
+        <tr><td><b>汇岳沪深300指数增强A</b><span>006120</span></td><td>指数型</td><td>1.6702</td><td class="up">+0.71%</td><td class="up">+9.36%</td><td>R4 中高</td><td><a href="#funds">详情</a></td></tr>
+        <tr><td><b>汇岳科技创新股票</b><span>011378</span></td><td>股票型</td><td>0.9875</td><td class="up">+1.26%</td><td class="up">+18.04%</td><td>R4 中高</td><td><a href="#funds">详情</a></td></tr>
+        <tr><td><b>汇岳现金宝货币A</b><span>003905</span></td><td>货币型</td><td>万份收益 0.4218</td><td>—</td><td>七日年化 1.56%</td><td>R1 低</td><td><a href="#funds">详情</a></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="meta" style="margin-top:12px">数据截至 {{.Year}}-10-17，基金过往业绩不代表未来表现。</p>
+  </div>
+</section>
+
+<section class="section" id="ir" style="padding-top:0">
+  <div class="wrap grid g2">
+    <div>
+      <div class="section-head" style="margin-bottom:24px"><div><h2>信息披露</h2></div></div>
+      <ul class="list">
+        <li><span>关于旗下部分基金调整申购起点的公告</span><span class="meta">{{.Year}}-10-15</span></li>
+        <li><span>旗下基金三季度报告提示性公告</span><span class="meta">{{.Year}}-10-12</span></li>
+        <li><span>关于新增销售机构的公告</span><span class="meta">{{.Year}}-09-27</span></li>
+        <li><span>关于防范不法分子冒用公司名义的风险提示</span><span class="meta">{{.Year}}-09-10</span></li>
+      </ul>
+    </div>
+    <div id="contact">
+      <div class="section-head" style="margin-bottom:24px"><div><h2>投资者教育</h2></div></div>
+      <div class="risk"><b>风险提示：</b>投资有风险，入市需谨慎。基金过往业绩不代表其未来表现，基金管理人管理的其他基金的业绩不构成本基金业绩表现的保证。投资者在投资前应认真阅读基金合同、招募说明书等法律文件，了解产品风险收益特征，根据自身风险承受能力审慎决策。</div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about"><a class="logo" href="#"><svg viewBox="0 0 34 34" fill="none"><rect x="1" y="1" width="32" height="32" stroke="#d8b26a" stroke-width="1.5"/><path d="M9 24V12l8 7 8-7v12" stroke="#d8b26a" stroke-width="2"/></svg>{{.Title}}</a><p>恪守受托责任，以专业创造长期价值。</p></div>
+      <div><h4>产品与服务</h4><ul><li>私人财富管理</li><li>公募基金</li><li>机构资产管理</li><li>家族办公室</li></ul></div>
+      <div><h4>研究洞察</h4><ul><li>宏观策略</li><li>行业研究</li><li>固定收益</li><li>市场观点</li></ul></div>
+      <div><h4>关于我们</h4><ul><li>公司简介</li><li>投研团队</li><li>社会责任</li><li>加入我们</li></ul></div>
+      <div><h4>客户服务</h4><ul><li>常见问题</li><li>投诉与建议</li><li>反洗钱专栏</li><li>service@{{.Domain}}</li></ul></div>
+    </div>
+    <div class="legal"><div>© {{.Year}} {{.Title}} 版权所有</div><div><span>法律声明</span><span>隐私政策</span><span>适当性管理</span></div></div>
+  </div>
+</footer>
+</body>
+</html>

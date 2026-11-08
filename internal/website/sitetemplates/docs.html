@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>快速开始 - {{.Title}} 开发者文档</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#fff;--fg:#1b1f24;--muted:#5d6672;--accent:#0b7a55;--line:#e7e9ec;--line-strong:#c6ccd3;--card:#fff;--alt:#f7f8f9;--icon-bg:#e6f4ee;--foot-bg:#fff;--foot-fg:#5d6672;--radius:8px;--code:#0f1720}
+.nav .wrap{width:calc(100% - 48px);max-width:none;gap:28px;height:64px}
+.logo{font-size:18px}
+.logo em{font-style:normal;font-weight:500;color:var(--muted);margin-left:2px}
+.searchbox{flex:1;max-width:420px;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--alt);display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#8a929c;font-size:14px}
+.searchbox kbd{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid var(--line-strong);border-radius:4px;padding:1px 6px;background:#fff}
+.version{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr) 220px;gap:0;max-width:1440px;margin:0 auto}
+.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;border-right:1px solid var(--line);padding:28px 20px 40px 28px;font-size:14px}
+.sidebar h4{font-size:12px;letter-spacing:.08em;color:#8a929c;text-transform:uppercase;margin:22px 0 8px}
+.sidebar h4:first-child{margin-top:0}
+.sidebar a{display:block;padding:6px 10px;border-radius:6px;color:#3a424c}
+.sidebar a:hover{background:var(--alt)}
+.sidebar a.on{background:var(--icon-bg);color:var(--accent);font-weight:600}
+.content{padding:44px 64px 80px;min-width:0}
+.crumb{font-size:13px;color:var(--muted)}
+.content h1{font-size:40px;margin:10px 0 14px}
+.content .lead{font-size:18px;color:var(--muted);white-space:pre-line}
+.content h2{font-size:26px;margin:52px 0 14px;padding-top:8px;scroll-margin-top:80px}
+.content h3{font-size:19px;margin:28px 0 10px}
+.content p{margin:12px 0;color:#2f363e}
+.content ul.dots{padding-left:22px;list-style:disc;color:#2f363e}
+.content ul.dots li{margin:6px 0}
+code{font:14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--alt);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+pre{background:var(--code);color:#d6e2ee;border-radius:10px;padding:0;margin:18px 0;overflow:hidden}
+pre .tabs{display:flex;gap:4px;padding:8px 10px;background:#17212c;font:12px ui-monospace,Menlo,monospace}
+pre .tabs span{padding:4px 10px;border-radius:6px;color:#8ea0b2}
+pre .tabs span.on{background:#243243;color:#fff}
+pre code{display:block;background:none;border:0;padding:18px 20px;color:inherit;font-size:13.5px;line-height:1.75;overflow:auto;white-space:pre}
+.k{color:#ff9e64}.s{color:#9ece6a}.c{color:#64748b}.f{color:#7aa2f7}
+.callout{display:flex;gap:14px;padding:16px 18px;border-radius:10px;background:#eef8f3;border:1px solid #c5e8d7;margin:22px 0;font-size:15px}
+.callout.warn{background:#fff7e8;border-color:#f6dfa8}
+.callout b{white-space:nowrap}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:24px 0}
+.cards .card{padding:22px}
+.cards .card h3{margin:0 0 6px;font-size:17px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:18px 0}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--alt);font-weight:600}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:56px}
+.pager a{border:1px solid var(--line);border-radius:10px;padding:16px 20px}
+.pager a:last-child{text-align:right}
+.pager span{display:block;font-size:13px;color:var(--muted)}
+.pager b{color:var(--accent)}
+.toc{position:sticky;top:64px;height:calc(100vh - 64px);padding:44px 24px;font-size:13px}
+.toc h4{font-size:12px;color:#8a929c;letter-spacing:.08em;margin-bottom:10px}
+.toc a{display:block;padding:5px 0 5px 12px;border-left:2px solid var(--line);color:var(--muted)}
+.toc a.on{border-left-color:var(--accent);color:var(--accent)}
+.foot{border-top:1px solid var(--line);margin-top:56px;padding-top:20px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+@media (max-width:1180px){.layout{grid-template-columns:240px minmax(0,1fr)}.toc{display:none}}
+@media (max-width:820px){.layout{grid-template-columns:1fr}.sidebar{display:none}.content{padding:32px 20px 64px}.cards,.pager{grid-template-columns:1fr}.searchbox{display:none}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><svg viewBox="0 0 34 34" fill="none"><rect width="34" height="34" rx="8" fill="#0b7a55"/><path d="M11 12l-4 5 4 5M23 12l4 5-4 5M19 9l-4 16" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{.Title}}<em>Docs</em></a>
+    <div class="searchbox"><span>搜索文档</span><kbd>⌘ K</kbd></div>
+    <nav class="menu"><a href="#">指南</a><a href="#api">API 参考</a><a href="#examples">示例</a><a href="#changelog">更新日志</a></nav>
+    <div class="actions"><span class="version hide-sm">v3.2</span><a class="btn btn-primary btn-sm" href="#">控制台</a></div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <h4>入门</h4>
+    <a class="on" href="#">快速开始</a><a href="#install">安装</a><a href="#config">配置</a><a href="#concepts">核心概念</a>
+    <h4>使用指南</h4>
+    <a href="#">身份认证</a><a href="#">数据模型</a><a href="#">文件上传</a><a href="#">实时订阅</a><a href="#">权限与角色</a>
+    <h4>部署</h4>
+    <a href="#">容器部署</a><a href="#">集群与高可用</a><a href="#">监控与告警</a>
+    <h4>参考</h4>
+    <a href="#api">REST API</a><a href="#api">SDK 参考</a><a href="#">错误码</a><a href="#changelog">更新日志</a><a href="#">常见问题</a>
+  </aside>
+
+  <main class="content">
+    <div class="crumb">文档 / 入门 / 快速开始</div>
+    <h1>快速开始</h1>
+    <p class="lead">{{.Description}}</p>
+
+    <div class="cards">
+      <a class="card" href="#install"><h3>安装 SDK</h3><p>使用包管理器在几秒钟内完成安装。</p></a>
+      <a class="card" href="#config"><h3>初始化配置</h3><p>配置访问密钥与服务地址。</p></a>
+      <a class="card" href="#concepts"><h3>核心概念</h3><p>了解项目、环境与资源的关系。</p></a>
+      <a class="card" href="#api"><h3>API 参考</h3><p>查看完整的接口与参数说明。</p></a>
+    </div>
+
+    <h2 id="install">安装</h2>
+    <p>{{.Title}} 提供多语言 SDK。以 Node.js 为例，在项目根目录执行以下命令：</p>
+    <pre><div class="tabs"><span class="on">npm</span><span>pnpm</span><span>yarn</span></div><code><span class="k">npm</span> install @example/sdk --save</code></pre>
+    <div class="callout"><b>提示</b><span>SDK 需要 Node.js 18 或更高版本。也可以使用 Python、Go 与 Java 版本的 SDK。</span></div>
+
+    <h2 id="config">初始化配置</h2>
+    <p>在控制台创建项目后，复制访问密钥并初始化客户端：</p>
+    <pre><div class="tabs"><span class="on">index.ts</span></div><code><span class="k">import</span> { Client } <span class="k">from</span> <span class="s">'@example/sdk'</span>;
+
+<span class="c">// 建议通过环境变量注入密钥，避免写入代码仓库</span>
+<span class="k">const</span> client = <span class="k">new</span> <span class="f">Client</span>({
+  endpoint: <span class="s">'https://api.{{.Domain}}'</span>,
+  accessKey: process.env.ACCESS_KEY,
+  region: <span class="s">'cn-east-1'</span>,
+});
+
+<span class="k">const</span> result = <span class="k">await</span> client.<span class="f">projects</span>.<span class="f">list</span>({ limit: <span class="s">20</span> });
+console.<span class="f">log</span>(result.items);</code></pre>
+    <table>
+      <thead><tr><th>参数</th><th>类型</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>endpoint</code></td><td>string</td><td>服务访问地址</td></tr>
+        <tr><td><code>accessKey</code></td><td>string</td><td>访问密钥，可在控制台生成</td></tr>
+        <tr><td><code>region</code></td><td>string</td><td>资源所在地域，默认 <code>cn-east-1</code></td></tr>
+        <tr><td><code>timeout</code></td><td>number</td><td>请求超时时间（毫秒），默认 30000</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><b>注意</b><span>访问密钥拥有账号下的完整权限，请勿在前端代码或公开仓库中暴露。</span></div>
+
+    <h2 id="concepts">核心概念</h2>
+    <p>在开始构建应用之前，建议先了解以下几个核心概念：</p>
+    <ul class="dots">
+      <li><b>项目（Project）</b>：资源隔离与计费的基本单位。</li>
+      <li><b>环境（Environment）</b>：同一项目下的开发、测试与生产环境。</li>
+      <li><b>资源（Resource）</b>：数据表、存储桶、函数等具体服务实例。</li>
+      <li><b>角色（Role）</b>：定义成员对资源的访问权限。</li>
+    </ul>
+
+    <h3 id="api">下一步</h3>
+    <p>完成初始化后，可以继续阅读 <a href="#" style="color:var(--accent)">身份认证</a> 与 <a href="#" style="color:var(--accent)">数据模型</a> 章节，或直接查看 <a href="#examples" style="color:var(--accent)">示例项目</a>。</p>
+
+    <div class="pager"><a href="#"><span>上一篇</span><b>← 产品简介</b></a><a href="#install"><span>下一篇</span><b>安装 →</b></a></div>
+    <div class="foot" id="changelog"><span>最后更新于 {{.Year}}-10-12</span><span>© {{.Year}} {{.Title}} · docs@{{.Domain}}</span></div>
+  </main>
+
+  <aside class="toc">
+    <h4>本页内容</h4>
+    <a class="on" href="#install">安装</a><a href="#config">初始化配置</a><a href="#concepts">核心概念</a><a href="#api">下一步</a>
+  </aside>
+</div>
+</body>
+</html>

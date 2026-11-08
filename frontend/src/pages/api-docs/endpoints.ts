@@ -282,13 +282,7 @@ export const sections: readonly Section[] = [
       {
         method: 'GET',
         path: '/panel/api/sites/templates',
-        summary: 'List built-in, installed and available open-source templates',
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/sites/templates/install',
-        summary: 'Install an allowlisted open-source template',
-        params: [{ name: 'id', in: 'body', type: 'string' }],
+        summary: 'List built-in Chinese templates and imported template ZIPs',
       },
       {
         method: 'POST',

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{.Title}} - 综合性专业法律服务机构</title>
+<meta name="description" content="{{.Description}}">
+<style>
+{{template "base.css"}}
+:root{--bg:#f7f4ee;--fg:#22201c;--muted:#6b665d;--accent:#7a1f2b;--line:#e2dccf;--line-strong:#c9bfa9;--card:#fffdf9;--alt:#efe9de;--icon-bg:#f3e4e2;--foot-bg:#1d1b18;--foot-fg:#bdb6a8;--radius:0;--thumb:linear-gradient(160deg,#4a3b2c,#22201c)}
+h1,h2,h3,.logo{font-family:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",serif;font-weight:600}
+.nav{background:var(--bg)}
+.logo{font-size:22px;letter-spacing:.16em}
+.logo small{display:block;font-size:10px;letter-spacing:.3em;color:var(--muted);font-family:-apple-system,"PingFang SC",sans-serif;font-weight:500}
+.hero{padding:0;border-bottom:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:1fr 1fr;min-height:600px}
+.hero .copy{padding:100px 64px 100px 0;display:flex;flex-direction:column;justify-content:center}
+.hero h1{font-size:clamp(36px,4.8vw,60px);line-height:1.3}
+.hero .lead{margin-top:28px}
+.hero .art{background:var(--thumb);position:relative;overflow:hidden}
+.hero .art svg{position:absolute;inset:0;width:100%;height:100%}
+.hero .art .caption{position:absolute;left:40px;bottom:40px;color:#e9dfcc;font-family:"Songti SC",serif;font-size:22px;letter-spacing:.2em}
+.areas{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.areas article{padding:40px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transition:background .25s}
+.areas article:hover{background:var(--card)}
+.areas h3{font-size:22px;display:flex;justify-content:space-between}
+.areas h3 span{color:var(--accent);font-size:16px}
+.areas p{color:var(--muted);margin-top:14px;font-size:15px}
+.team .person{text-align:left}
+.team .photo{aspect-ratio:3/4;background:linear-gradient(180deg,#d9cfbf,#b7a88f);position:relative;margin-bottom:18px;overflow:hidden}
+.team .photo svg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:76%}
+.team h3{font-size:20px}
+.team .role{color:var(--accent);font-size:14px;margin:4px 0 8px}
+.team p{color:var(--muted);font-size:14px}
+.case-row{display:grid;grid-template-columns:160px 1fr;gap:32px;padding:32px 0;border-bottom:1px solid var(--line)}
+.case-row .year{font-family:"Songti SC",serif;font-size:36px;color:var(--accent)}
+.case-row h3{font-size:21px}
+.case-row p{color:var(--muted);margin-top:8px}
+.honor{background:var(--fg);color:#efe7d8;padding:72px 0}
+.honor .stats .stat b{color:#efe7d8;font-family:"Songti SC",serif;font-weight:600}
+.honor .stats .stat span{color:#a49c8c}
+.offices{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line)}
+.offices div{padding:28px 24px 28px 0}
+.offices b{font-family:"Songti SC",serif;font-size:22px;display:block;margin-bottom:6px}
+.offices span{color:var(--muted);font-size:14px}
+@media (max-width:980px){.hero .wrap{grid-template-columns:1fr}.hero .copy{padding:72px 0}.hero .art{min-height:320px}.areas{grid-template-columns:1fr 1fr}.offices{grid-template-columns:1fr 1fr}.case-row{grid-template-columns:1fr;gap:8px}}
+@media (max-width:620px){.areas{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap"><div>北京 · 上海 · 深圳 · 香港</div><div><span>法律服务热线</span><span>English</span></div></div></div>
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><svg viewBox="0 0 34 34" fill="none"><path d="M17 4v26M8 30h18M6 10h22M11 10l-5 9h10l-5-9ZM23 10l-5 9h10l-5-9Z" stroke="#7a1f2b" stroke-width="1.8" stroke-linejoin="round"/></svg><span>{{.Title}}<small>LAW FIRM</small></span></a>
+    <nav class="menu"><a href="#about">关于我们</a><a href="#practice">业务领域</a><a href="#team">专业团队</a><a href="#cases">经典案例</a><a href="#insights">法律洞察</a></nav>
+    <div class="actions"><a class="btn btn-primary btn-sm" href="#contact">预约咨询</a></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="copy">
+      <span class="meta">成立于 1998 年 · 总部位于北京</span>
+      <h1 style="margin-top:14px">专注商事法律服务<br>二十六年</h1>
+      <p class="lead">{{.Description}}</p>
+      <div class="cta"><a class="btn btn-primary" href="#practice">业务领域</a><a class="btn btn-ghost" href="#team">认识我们的律师</a></div>
+    </div>
+    <div class="art" aria-hidden="true">
+      <svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice"><g stroke="rgba(233,223,204,.18)" fill="none"><path d="M120 520V200M200 520V200M280 520V200M360 520V200M440 520V200"/><path d="M90 200h380L300 90 90 200Z"/><path d="M80 520h400M70 545h420"/></g><circle cx="470" cy="120" r="70" fill="rgba(233,223,204,.06)"/></svg>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="practice">
+  <div class="wrap">
+    <div class="section-head"><div><h2>业务领域</h2></div><p>覆盖企业全生命周期的法律需求，以跨领域协作为客户提供一站式解决方案。</p></div>
+    <div class="areas">
+      <article><h3>公司与并购<span>01</span></h3><p>企业设立、重组、并购交易与公司治理全流程法律服务。</p></article>
+      <article><h3>资本市场<span>02</span></h3><p>境内外上市、再融资、债券发行与上市公司合规。</p></article>
+      <article><h3>争议解决<span>03</span></h3><p>商事诉讼、仲裁与执行，代理重大疑难复杂案件。</p></article>
+      <article><h3>知识产权<span>04</span></h3><p>专利、商标、著作权的确权、许可与侵权维权。</p></article>
+      <article><h3>合规与监管<span>05</span></h3><p>数据合规、反垄断审查与企业合规体系建设。</p></article>
+      <article><h3>跨境投资<span>06</span></h3><p>海外投资、外商投资与国际贸易相关法律服务。</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="honor">
+  <div class="wrap stats">
+    <div class="stat"><b>26 年</b><span>专业法律服务历程</span></div>
+    <div class="stat"><b>480+</b><span>执业律师与专业人员</span></div>
+    <div class="stat"><b>3,200+</b><span>服务企业客户</span></div>
+    <div class="stat"><b>90+</b><span>业界权威评级推荐</span></div>
+  </div>
+</section>
+
+<section class="section team" id="team">
+  <div class="wrap">
+    <div class="section-head"><div><h2>专业团队</h2></div><a class="more" href="#team">查看全部律师 →</a></div>
+    <div class="grid g4">
+      <article class="person"><div class="photo"><svg viewBox="0 0 200 200"><circle cx="100" cy="72" r="40" fill="#8c7c63"/><path d="M20 200c6-52 42-80 80-80s74 28 80 80Z" fill="#5a4d3b"/></svg></div><h3>陈律师</h3><div class="role">高级合伙人 · 管理委员会主任</div><p>专注公司并购与资本市场，执业逾二十年。</p></article>
+      <article class="person"><div class="photo"><svg viewBox="0 0 200 200"><circle cx="100" cy="72" r="40" fill="#8c7c63"/><path d="M20 200c6-52 42-80 80-80s74 28 80 80Z" fill="#4a3b2c"/></svg></div><h3>林律师</h3><div class="role">合伙人 · 争议解决部</div><p>擅长重大商事诉讼与国际仲裁。</p></article>
+      <article class="person"><div class="photo"><svg viewBox="0 0 200 200"><circle cx="100" cy="72" r="40" fill="#8c7c63"/><path d="M20 200c6-52 42-80 80-80s74 28 80 80Z" fill="#6b1f28"/></svg></div><h3>周律师</h3><div class="role">合伙人 · 知识产权部</div><p>专注科技企业知识产权布局与保护。</p></article>
+      <article class="person"><div class="photo"><svg viewBox="0 0 200 200"><circle cx="100" cy="72" r="40" fill="#8c7c63"/><path d="M20 200c6-52 42-80 80-80s74 28 80 80Z" fill="#3c3a35"/></svg></div><h3>许律师</h3><div class="role">合伙人 · 合规与监管部</div><p>深耕数据合规与跨境监管事务。</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="cases">
+  <div class="wrap">
+    <div class="section-head"><div><h2>经典案例</h2></div></div>
+    <div class="case-row"><div class="year">{{.Year}}</div><div><h3>代表某制造业集团完成跨境并购交易</h3><p>协调多法域律师团队，完成尽职调查、交易结构设计与反垄断申报。</p></div></div>
+    <div class="case-row"><div class="year">{{.Year}}</div><div><h3>代理某科技企业专利侵权纠纷获全面胜诉</h3><p>通过技术比对与证据保全策略，为客户挽回重大经济损失。</p></div></div>
+    <div class="case-row"><div class="year">{{.Year}}</div><div><h3>协助某消费品牌完成科创板首次公开发行</h3><p>担任发行人律师，全程参与改制、申报与审核问询回复。</p></div></div>
+  </div>
+</section>
+
+<section class="section" id="insights">
+  <div class="wrap">
+    <div class="section-head"><div><h2>法律洞察</h2></div><a class="more" href="#insights">更多文章 →</a></div>
+    <div class="grid g3">
+      <article class="card"><span class="tag">合规</span><h3>数据出境安全评估实务要点解析</h3><p>梳理申报流程中的常见问题与应对建议。</p><p class="meta" style="margin-top:16px">{{.Year}}-10-11</p></article>
+      <article class="card"><span class="tag">并购</span><h3>经营者集中审查新规对交易的影响</h3><p>从申报门槛到审查时限，解读规则变化。</p><p class="meta" style="margin-top:16px">{{.Year}}-09-20</p></article>
+      <article class="card"><span class="tag">劳动</span><h3>企业灵活用工模式下的法律风险防范</h3><p>结合典型案例分析用工合规的关键环节。</p><p class="meta" style="margin-top:16px">{{.Year}}-08-29</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:24px"><div><h2>办公地点</h2></div></div>
+    <div class="offices"><div><b>北京</b><span>朝阳区 · 总部</span></div><div><b>上海</b><span>浦东新区</span></div><div><b>深圳</b><span>福田区</span></div><div><b>香港</b><span>中环</span></div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about"><a class="logo" href="#" style="color:#efe7d8">{{.Title}}</a><p>为客户提供专业、高效、负责任的法律服务。</p></div>
+      <div><h4>业务领域</h4><ul><li>公司与并购</li><li>资本市场</li><li>争议解决</li><li>知识产权</li></ul></div>
+      <div><h4>关于我们</h4><ul><li>律所简介</li><li>专业团队</li><li>荣誉奖项</li><li>社会责任</li></ul></div>
+      <div><h4>洞察</h4><ul><li>法律评论</li><li>行业研究</li><li>活动讲座</li><li>出版物</li></ul></div>
+      <div><h4>联系</h4><ul><li>预约咨询</li><li>加入我们</li><li>媒体联络</li><li>contact@{{.Domain}}</li></ul></div>
+    </div>
+    <div class="legal"><div>© {{.Year}} {{.Title}} 版权所有</div><div><span>免责声明</span><span>隐私政策</span></div></div>
+  </div>
+</footer>
+</body>
+</html>
