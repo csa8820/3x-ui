@@ -1737,6 +1737,13 @@ resolve_latest_tag() {
     curl -Ls --retry 5 --retry-delay 3 --connect-timeout 15 --max-time 60 "https://api.github.com/repos/csa8820/3x-ui/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
 }
 
+# dev_release_exists reports whether the rolling dev-latest pre-release is published.
+dev_release_exists() {
+    local code
+    code=$(curl -sIL --retry 3 --retry-delay 3 --connect-timeout 15 --max-time 60 -o /dev/null -w '%{http_code}' "https://github.com/csa8820/3x-ui/releases/download/dev-latest/x-ui-linux-$(arch).tar.gz.sha256" 2>/dev/null)
+    [[ "${code}" == "200" ]]
+}
+
 # Releases publish <asset>.sha256 next to each archive. A mismatch or a failed
 # sidecar download aborts the install; only a 404 (releases predating the
 # sidecar) is tolerated with a warning.
@@ -1788,6 +1795,12 @@ install_x-ui() {
     # Download resources
     if [ $# == 0 ]; then
         tag_version=$(resolve_latest_tag)
+        if [[ ! -n "$tag_version" ]] && dev_release_exists; then
+            # This fork publishes only the rolling dev build, so with no stable
+            # release a plain install falls back to dev-latest.
+            tag_version="dev-latest"
+            echo -e "${yellow}No stable release found, installing the rolling dev build (tag: dev-latest).${plain}"
+        fi
         if [[ ! -n "$tag_version" ]]; then
             echo -e "${red}Failed to fetch x-ui version, it may be due to GitHub API restrictions, please try it later${plain}"
             exit 1

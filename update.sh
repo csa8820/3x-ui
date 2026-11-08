@@ -536,6 +536,12 @@ update_x-ui() {
         echo -e "${green}Using update tag: ${tag_version}${plain}"
     else
         tag_version=$(${curl_bin} -Ls "https://api.github.com/repos/csa8820/3x-ui/releases/latest" 2> /dev/null | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        # This fork publishes only the rolling dev build, so with no stable
+        # release a plain update falls back to dev-latest.
+        if [[ ! -n "$tag_version" ]] && [[ "$(${curl_bin} -sIL --retry 3 --connect-timeout 15 --max-time 60 -o /dev/null -w '%{http_code}' "https://github.com/csa8820/3x-ui/releases/download/dev-latest/x-ui-linux-$(arch).tar.gz.sha256" 2> /dev/null)" == "200" ]]; then
+            tag_version="dev-latest"
+            echo -e "${yellow}No stable release found, updating to the rolling dev build (tag: dev-latest).${plain}"
+        fi
         if [[ ! -n "$tag_version" ]]; then
             _fail "ERROR: Failed to fetch x-ui version, it may be due to GitHub API restrictions, please try it later"
         fi
