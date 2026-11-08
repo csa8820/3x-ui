@@ -6,6 +6,30 @@ import { useSites } from '@/api/queries/useSites';
 import { FormField } from '@/components/form/rhf';
 import { RandomUtil } from '@/utils';
 
+type InboundCertificate = {
+  certificateFile?: string;
+  keyFile?: string;
+  certificate?: string[];
+  usage?: string;
+};
+
+// Mirrors inboundCertificateDomain: certificates a site wrote in earlier are not the inbound's own.
+function hasOwnCertificate(
+  certificates: InboundCertificate[] | undefined,
+  previousSite: { certificateFile?: string; keyFile?: string } | undefined,
+) {
+  const usable = (certificates ?? []).filter(
+    (c) => c.usage !== 'verify' && (c.certificateFile || c.certificate?.length),
+  );
+  if (usable.length === 0) return false;
+  return !(
+    previousSite?.certificateFile &&
+    usable.length === 1 &&
+    usable[0].certificateFile === previousSite.certificateFile &&
+    usable[0].keyFile === previousSite.keyFile
+  );
+}
+
 export default function SiteAssociation(_props: { inboundId?: number }) {
   const { t } = useTranslation();
   const selectorId = useId();
@@ -27,6 +51,14 @@ export default function SiteAssociation(_props: { inboundId?: number }) {
   )
     hint = 'fallback';
 
+  const certificates = useWatch({ control, name: 'streamSettings.tlsSettings.certificates' }) as
+    | InboundCertificate[]
+    | undefined;
+  const previousSite = useWatch({ control, name: 'streamSettings.website' }) as
+    | { certificateFile?: string; keyFile?: string }
+    | undefined;
+  const usesOwnCertificate = hasOwnCertificate(certificates, previousSite);
+
   function choose(id: number | undefined) {
     const site = sites.find((item) => item.id === id);
     if (!site) {
@@ -34,7 +66,7 @@ export default function SiteAssociation(_props: { inboundId?: number }) {
       return;
     }
     setValue('streamSettings.website', { ...site.config, enabled: true, siteId: id, mode: 'auto' });
-    if (hint === 'path' || hint === 'fallback') {
+    if ((hint === 'path' || hint === 'fallback') && !usesOwnCertificate) {
       setValue('streamSettings.tlsSettings.serverName', site.config.domain);
       setValue(
         'streamSettings.tlsSettings.certificates',
@@ -99,9 +131,11 @@ export default function SiteAssociation(_props: { inboundId?: number }) {
             type="info"
             title={t(`sites.hints.${mode && mode !== 'auto' ? mode : hint}`)}
           />
-          {hint === 'fallback' && sites.find((site) => site.id === siteId)?.config.autoTLS && (
-            <Alert showIcon type="warning" title={t('sites.fallbackCertificate')} />
-          )}
+          {hint === 'fallback' &&
+            !usesOwnCertificate &&
+            sites.find((site) => site.id === siteId)?.config.autoTLS && (
+              <Alert showIcon type="warning" title={t('sites.fallbackCertificate')} />
+            )}
         </>
       )}
     </Space>

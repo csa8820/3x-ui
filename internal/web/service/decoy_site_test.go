@@ -96,3 +96,42 @@ func TestSiteAssociationRejectsOpaqueTCPPortCollision(t *testing.T) {
 		t.Fatalf("unexpected collision result: %v", err)
 	}
 }
+
+// Linking a site that has its own auto certificate used to replace the inbound's
+// certificate, so clients using the inbound's real domain failed the ACME whitelist.
+func TestSiteAssociationKeepsInboundCertificate(t *testing.T) {
+	certFile, keyFile := writeTestCertificate(t)
+	for _, tc := range []struct{ name, protocol, network, want string }{
+		{"path", "vless", "xhttp", "path"},
+		{"fallback", "trojan", "tcp", "fallback"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			tlsSettings := map[string]any{"serverName": "golden-fixture.test", "certificates": []any{map[string]any{"certificateFile": certFile, "keyFile": keyFile}}}
+			raw, _ := json.Marshal(map[string]any{"network": tc.network, "security": "tls", "tlsSettings": tlsSettings, "xhttpSettings": map[string]any{"path": "/connect/"}, "website": map[string]any{"enabled": true, "siteId": 7, "mode": "auto"}})
+			ib := &model.Inbound{Tag: "own-cert-" + tc.name, Protocol: model.Protocol(tc.protocol), Port: 443, Settings: `{"clients":[]}`, StreamSettings: string(raw), ShareAddrStrategy: "custom", ShareAddr: "golden-fixture.test"}
+			if err := applySiteProfile(ib, website.Config{SiteID: 7, Enabled: true, Domain: "site.example.com", Port: 443, Template: "journal", AutoTLS: true, Email: "a@example.com"}); err != nil {
+				t.Fatal(err)
+			}
+			var got struct {
+				TLS struct {
+					ServerName   string           `json:"serverName"`
+					Certificates []map[string]any `json:"certificates"`
+				} `json:"tlsSettings"`
+			}
+			_ = json.Unmarshal([]byte(ib.StreamSettings), &got)
+			if got.TLS.ServerName != "golden-fixture.test" || len(got.TLS.Certificates) != 1 || got.TLS.Certificates[0]["certificateFile"] != certFile {
+				t.Fatalf("inbound TLS was overwritten: %+v", got.TLS)
+			}
+			if ib.ShareAddr != "golden-fixture.test" {
+				t.Fatalf("share address was overwritten: %q", ib.ShareAddr)
+			}
+			stream, _ := website.Parse(ib.StreamSettings)
+			if stream.Website.Mode != tc.want || stream.Website.AutoTLS || stream.Website.CertificateFile != "" || stream.Website.Domain != "golden-fixture.test" {
+				t.Fatalf("website does not reuse the inbound certificate: %+v", stream.Website)
+			}
+			if err := validateInboundWebsite(ib); err != nil {
+				t.Fatalf("linked inbound rejected: %v", err)
+			}
+		})
+	}
+}

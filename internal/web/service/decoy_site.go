@@ -1,15 +1,18 @@
 package service
 
 import (
+	"crypto/x509"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
+
+	"gorm.io/gorm"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/website"
-	"gorm.io/gorm"
 )
 
 type DecoySiteService struct{}
@@ -54,18 +57,28 @@ func applySiteProfile(inbound *model.Inbound, profile website.Config) error {
 		if tlsSettings == nil {
 			tlsSettings = map[string]any{}
 		}
-		tlsSettings["serverName"] = profile.Domain
-		if profile.AutoTLS {
-			tlsSettings["certificates"] = []any{}
+		domain, ownCertificate, err := inboundCertificateDomain(tlsSettings, stream.Website)
+		if err != nil {
+			return err
+		}
+		if ownCertificate {
+			profile.Domain = domain
+			profile.AutoTLS, profile.Email = false, ""
+			profile.CertificateFile, profile.KeyFile = "", ""
 		} else {
-			tlsSettings["certificates"] = []any{map[string]any{"certificateFile": profile.CertificateFile, "keyFile": profile.KeyFile}}
+			tlsSettings["serverName"] = profile.Domain
+			if profile.AutoTLS {
+				tlsSettings["certificates"] = []any{}
+			} else {
+				tlsSettings["certificates"] = []any{map[string]any{"certificateFile": profile.CertificateFile, "keyFile": profile.KeyFile}}
+			}
+			inbound.ShareAddrStrategy = "custom"
+			inbound.ShareAddr = profile.Domain
 		}
 		if mode == "fallback" {
 			tlsSettings["alpn"] = []string{"http/1.1"}
 		}
 		raw["tlsSettings"] = tlsSettings
-		inbound.ShareAddrStrategy = "custom"
-		inbound.ShareAddr = profile.Domain
 	}
 	if mode == "reality" {
 		rs, _ := raw["realitySettings"].(map[string]any)
@@ -84,6 +97,50 @@ func applySiteProfile(inbound *model.Inbound, profile website.Config) error {
 	encoded, _ := json.Marshal(raw)
 	inbound.StreamSettings = string(encoded)
 	return nil
+}
+
+// inboundCertificateDomain reports the domain served by the inbound's own TLS certificate.
+// Certificates a site wrote in earlier are not the inbound's own, so the site keeps managing them.
+func inboundCertificateDomain(tlsSettings map[string]any, previous website.Config) (string, bool, error) {
+	encoded, _ := json.Marshal(tlsSettings)
+	var settings website.TLSSettings
+	if err := json.Unmarshal(encoded, &settings); err != nil {
+		return "", false, err
+	}
+	settings.Certificates = slices.DeleteFunc(settings.Certificates, func(c website.TLSCertificate) bool {
+		return c.Usage == "verify" || (c.CertificateFile == "" && len(c.Certificate) == 0)
+	})
+	if len(settings.Certificates) == 0 {
+		return "", false, nil
+	}
+	if previous.CertificateFile != "" && len(settings.Certificates) == 1 &&
+		settings.Certificates[0].CertificateFile == previous.CertificateFile && settings.Certificates[0].KeyFile == previous.KeyFile {
+		return "", false, nil
+	}
+	certs, err := settings.LoadCertificates()
+	if err != nil {
+		return "", false, err
+	}
+	serverName, _ := tlsSettings["serverName"].(string)
+	var fallback string
+	for _, cert := range certs {
+		leaf, err := x509.ParseCertificate(cert.Certificate[0])
+		if err != nil {
+			continue
+		}
+		if serverName != "" && leaf.VerifyHostname(serverName) == nil {
+			return serverName, true, nil
+		}
+		for _, name := range leaf.DNSNames {
+			if fallback == "" && !strings.HasPrefix(name, "*.") {
+				fallback = name
+			}
+		}
+	}
+	if fallback == "" {
+		return "", false, errors.New("set the inbound SNI to a domain covered by its TLS certificate before linking a website")
+	}
+	return fallback, true, nil
 }
 
 func resolveInboundSite(inbound *model.Inbound) error {

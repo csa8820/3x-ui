@@ -8,22 +8,25 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"golang.org/x/crypto/acme"
 	"golang.org/x/crypto/acme/autocert"
+
+	"github.com/mhsanaei/3x-ui/v3/internal/config"
 )
 
 type TLSSettings struct {
-	MinVersion    string `json:"minVersion"`
-	MaxVersion    string `json:"maxVersion"`
-	ECHServerKeys string `json:"echServerKeys"`
-	Certificates  []struct {
-		CertificateFile string   `json:"certificateFile"`
-		KeyFile         string   `json:"keyFile"`
-		Certificate     []string `json:"certificate"`
-		Key             []string `json:"key"`
-		Usage           string   `json:"usage"`
-	} `json:"certificates"`
+	MinVersion    string           `json:"minVersion"`
+	MaxVersion    string           `json:"maxVersion"`
+	ECHServerKeys string           `json:"echServerKeys"`
+	Certificates  []TLSCertificate `json:"certificates"`
+}
+
+type TLSCertificate struct {
+	CertificateFile string   `json:"certificateFile"`
+	KeyFile         string   `json:"keyFile"`
+	Certificate     []string `json:"certificate"`
+	Key             []string `json:"key"`
+	Usage           string   `json:"usage"`
 }
 
 func (s TLSSettings) LoadCertificates() ([]tls.Certificate, error) {
@@ -65,7 +68,7 @@ func TLSConfig(s Stream) (*tls.Config, error) {
 	}
 	if s.Website.AutoTLS {
 		cache := filepath.Join(config.GetDBFolderPath(), "website-certs")
-		if err := os.MkdirAll(cache, 0700); err != nil {
+		if err := os.MkdirAll(cache, 0o700); err != nil {
 			return nil, err
 		}
 		manager := &autocert.Manager{
