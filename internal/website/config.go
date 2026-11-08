@@ -19,12 +19,20 @@ import (
 )
 
 type Config struct {
-	Enabled     bool   `json:"enabled"`
-	Domain      string `json:"domain"`
-	AutoTLS     bool   `json:"autoTLS"`
-	Email       string `json:"email"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	SiteID          int    `json:"siteId,omitempty"`
+	Mode            string `json:"mode,omitempty"`
+	Template        string `json:"template,omitempty"`
+	Standalone      bool   `json:"standalone,omitempty"`
+	Listen          string `json:"listen,omitempty"`
+	Port            int    `json:"port,omitempty"`
+	CertificateFile string `json:"certificateFile,omitempty"`
+	KeyFile         string `json:"keyFile,omitempty"`
+	Enabled         bool   `json:"enabled"`
+	Domain          string `json:"domain"`
+	AutoTLS         bool   `json:"autoTLS"`
+	Email           string `json:"email"`
+	Title           string `json:"title"`
+	Description     string `json:"description"`
 }
 
 type Stream struct {
@@ -43,6 +51,26 @@ func Parse(raw string) (Stream, error) {
 		return s, nil
 	}
 	err := json.Unmarshal([]byte(raw), &s)
+	if err == nil && s.Network != "xhttp" {
+		var parsed map[string]json.RawMessage
+		_ = json.Unmarshal([]byte(raw), &parsed)
+		var transport struct {
+			Path        string `json:"path"`
+			ServiceName string `json:"serviceName"`
+		}
+		key := s.Network + "Settings"
+		if s.Network == "grpc" {
+			key = "grpcSettings"
+		}
+		if s.Network == "httpupgrade" {
+			key = "httpupgradeSettings"
+		}
+		_ = json.Unmarshal(parsed[key], &transport)
+		s.XHTTP.Path = transport.Path
+		if s.Network == "grpc" && transport.ServiceName != "" {
+			s.XHTTP.Path = "/" + strings.Trim(transport.ServiceName, "/") + "/"
+		}
+	}
 	return s, err
 }
 
@@ -64,11 +92,26 @@ func (s Stream) Validate(protocol string, port int) error {
 	if runtime.GOOS == "windows" {
 		return errors.New("built-in XHTTP websites require Linux or macOS")
 	}
-	if protocol != "vless" || s.Network != "xhttp" || s.Security != "tls" {
-		return errors.New("built-in websites require VLESS + XHTTP + TLS")
-	}
-	if err := ValidatePath(s.XHTTP.Path); err != nil {
-		return err
+	switch s.Website.Mode {
+	case "independent":
+	case "fallback":
+		if (protocol != "vless" && protocol != "trojan") || (s.Network != "tcp" && s.Network != "raw") || s.Security != "tls" {
+			return errors.New("website fallback requires VLESS/Trojan + RAW + TLS")
+		}
+		if s.Website.AutoTLS {
+			return errors.New("RAW TLS fallback requires an existing certificate; use REALITY or an HTTP transport for automatic certificates")
+		}
+	case "reality":
+		if s.Security != "reality" {
+			return errors.New("website REALITY target requires REALITY security")
+		}
+	default:
+		if s.Security != "tls" || (s.Network != "xhttp" && s.Network != "ws" && s.Network != "grpc" && s.Network != "httpupgrade") {
+			return errors.New("website path sharing requires TLS with XHTTP, WebSocket, gRPC or HTTPUpgrade")
+		}
+		if err := ValidatePath(s.XHTTP.Path); err != nil {
+			return err
+		}
 	}
 	u, err := url.Parse("https://" + s.Website.Domain)
 	if err != nil || u.Hostname() != s.Website.Domain || !strings.Contains(s.Website.Domain, ".") ||
@@ -88,7 +131,7 @@ func (s Stream) Validate(protocol string, port int) error {
 		return errors.New("built-in websites do not support ECH server keys")
 	}
 	if !s.Website.AutoTLS {
-		certs, err := s.TLS.LoadCertificates()
+		certs, err := EffectiveTLS(s).LoadCertificates()
 		if err != nil {
 			return err
 		}
@@ -138,3 +181,17 @@ func CoreStream(raw string) string {
 func Address(listen string, port int) string {
 	return net.JoinHostPort(listen, fmt.Sprint(port))
 }
+
+func EffectiveTLS(s Stream) TLSSettings {
+	if s.Website.CertificateFile == "" {
+		return s.TLS
+	}
+	var settings TLSSettings
+	raw, _ := json.Marshal(map[string]any{"certificates": []any{map[string]any{"certificateFile": s.Website.CertificateFile, "keyFile": s.Website.KeyFile}}})
+	_ = json.Unmarshal(raw, &settings)
+	return settings
+}
+
+func SiteAddress(tag string) string { return BackendAddress("page-" + tag) }
+
+func IsPathMode(mode string) bool { return mode == "" || mode == "path" || mode == "auto" }

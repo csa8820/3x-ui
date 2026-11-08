@@ -30,6 +30,10 @@ func NewHandler(config Config, proxyPath, upstream string, transport http.RoundT
 	if config.Description == "" {
 		config.Description = "An independent space for thoughtful projects, useful ideas and new possibilities."
 	}
+	var pageHandler http.Handler
+	if config.Template != "" && config.Template != "studio" {
+		pageHandler = TemplateHandler(config)
+	}
 	target, _ := url.Parse(upstream)
 	proxy := &httputil.ReverseProxy{
 		Rewrite: func(r *httputil.ProxyRequest) {
@@ -44,9 +48,13 @@ func NewHandler(config Config, proxyPath, upstream string, transport http.RoundT
 		},
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.URL.Path, proxyPath) {
+		if proxyPath != "" && strings.HasPrefix(r.URL.Path, proxyPath) {
 			_ = http.NewResponseController(w).EnableFullDuplex()
 			proxy.ServeHTTP(w, r)
+			return
+		}
+		if pageHandler != nil {
+			pageHandler.ServeHTTP(w, r)
 			return
 		}
 		w.Header().Set("X-Content-Type-Options", "nosniff")

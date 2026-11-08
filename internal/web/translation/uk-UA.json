@@ -128,7 +128,8 @@
     "openMenu": "Відкрити меню",
     "pinSidebar": "Закріпити бічну панель",
     "unpinSidebar": "Відкріпити бічну панель",
-    "subFormats": "Формати підписки"
+    "subFormats": "Формати підписки",
+    "sites": "Websites"
   },
   "pages": {
     "login": {
@@ -2878,7 +2879,6 @@
     "acmeTerms": "Enabling automatic certificates accepts the Let’s Encrypt Subscriber Agreement.",
     "email": "Certificate contact email (optional)",
     "title": "Website title",
-    "create": "Create XHTTP + website",
     "ready": "Website and certificate are ready",
     "awaitingCertificate": "Website is listening; certificate issuance is in progress",
     "stopped": "Website is not running",
@@ -2887,5 +2887,47 @@
     "invalidDomain": "Enter a valid domain without scheme, port or path.",
     "invalidPath": "Use a dedicated XHTTP path ending in /, for example /connect-a83f/.",
     "introduction": "Website introduction"
+  },
+  "sites": {
+    "subtitle": "Reusable websites and templates. Associate one with any inbound when needed.",
+    "create": "Create website",
+    "gallery": "Template library",
+    "importZIP": "Import template ZIP",
+    "zipLimit": "The template ZIP must not exceed 25 MiB.",
+    "standalone": "Listen independently",
+    "onDemand": "Start when associated",
+    "empty": "Create a website or choose a template to get started.",
+    "bindHelp": "Open any inbound and use its Websites tab to choose a site and port-sharing mode. Leaving it unassociated keeps its normal behavior.",
+    "editor": "Website settings",
+    "name": "Website name",
+    "template": "Template",
+    "preview": "Preview",
+    "importedContent": "Title and introduction apply to built-in templates. Imported templates keep their original content.",
+    "standaloneHelp": "Start an independent HTTPS listener even without an inbound. Leave off when this site will share an inbound port.",
+    "certificateFile": "Certificate file",
+    "keyFile": "Private key file",
+    "search": "Search by name, category or source",
+    "catalogHelp": "Six built-in templates work offline. Additional Start Bootstrap templates can be installed on demand under MIT. You can also import a static ZIP.",
+    "useTemplate": "Use template",
+    "install": "Install template",
+    "deleteConfirm": "Delete this website? Referenced sites must be unlinked first.",
+    "associationHelp": "Select a reusable website. Automatic mode chooses an integration supported by this inbound. Arbitrary protocols can use a separate website port; sharing a TCP port requires a compatible transport.",
+    "none": "No associated website",
+    "mode": "Port cooperation",
+    "fallbackCertificate": "RAW TLS fallback needs a site with an existing certificate. Automatic certificates are available with HTTP transports or REALITY.",
+    "modes": {
+      "auto": "Automatic",
+      "path": "HTTP path sharing",
+      "fallback": "RAW TLS fallback",
+      "reality": "REALITY target website",
+      "independent": "Independent website / TCP-UDP coexistence"
+    },
+    "hints": {
+      "path": "The website handles normal requests. A dedicated HTTP path forwards this inbound on the same TLS port.",
+      "fallback": "Xray keeps the TLS listener and sends normal browser requests to the selected website.",
+      "reality": "The selected website becomes the local REALITY target. Keys and client credentials remain managed by the inbound.",
+      "independent": "The website uses its configured TCP port. UDP protocols may use the same port number. Other TCP protocols need different ports."
+    },
+    "references": "Associated inbounds: {count}"
   }
 }

@@ -24,7 +24,7 @@ type Instance struct {
 type running struct {
 	server      *http.Server
 	listener    net.Listener
-	transport   *http2.Transport
+	transport   interface{ CloseIdleConnections() }
 	fingerprint string
 	address     string
 }
@@ -66,6 +66,9 @@ func (m *Manager) Ensure(inst Instance) (ensureErr error) {
 	if old != nil && old.fingerprint == fingerprint {
 		return nil
 	}
+	if inst.Stream.Website.Mode == "fallback" {
+		return m.ensureFallbackLocked(inst, fingerprint)
+	}
 	tlsConfig, err := TLSConfig(inst.Stream)
 	if err != nil {
 		return err
@@ -96,18 +99,34 @@ func (m *Manager) Ensure(inst Instance) (ensureErr error) {
 			return (&net.Dialer{Timeout: 10 * time.Second}).DialContext(ctx, "unix", BackendAddress(inst.Tag))
 		},
 	}
-	handler := NewHandler(inst.Stream.Website, inst.Stream.XHTTP.Path, "http://localhost", transport)
+	var upstream http.RoundTripper = transport
+	var closer interface{ CloseIdleConnections() } = transport
+	if inst.Stream.Network == "ws" || inst.Stream.Network == "httpupgrade" {
+		h1 := &http.Transport{DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+			return (&net.Dialer{Timeout: 10 * time.Second}).DialContext(ctx, "unix", BackendAddress(inst.Tag))
+		}}
+		upstream, closer = h1, h1
+	}
+	proxyPath := inst.Stream.XHTTP.Path
+	if !IsPathMode(inst.Stream.Website.Mode) {
+		proxyPath = ""
+	}
+	handler := NewHandler(inst.Stream.Website, proxyPath, "http://localhost", upstream)
 	server := &http.Server{Handler: handler, TLSConfig: tlsConfig, ReadHeaderTimeout: 10 * time.Second, IdleTimeout: 2 * time.Minute}
 	if err := http2.ConfigureServer(server, &http2.Server{}); err != nil {
 		return err
 	}
 	addr := Address(inst.Listen, inst.Port)
+	network := "tcp"
+	if inst.Stream.Website.Mode == "reality" {
+		network, addr = "unix", SiteAddress(inst.Tag)
+	}
 	var listener net.Listener
 	if old != nil && old.address == addr {
 		// A new handler/config can use the already-bound socket after shutting down the old server.
 		m.removeLocked(inst.Tag)
 	}
-	listener, err = net.Listen("tcp", addr)
+	listener, err = net.Listen(network, addr)
 	if err != nil {
 		transport.CloseIdleConnections()
 		return fmt.Errorf("website %s cannot listen on %s: %w", inst.Tag, addr, err)
@@ -115,7 +134,7 @@ func (m *Manager) Ensure(inst Instance) (ensureErr error) {
 	if old != nil {
 		m.removeLocked(inst.Tag)
 	}
-	entry := &running{server: server, listener: listener, transport: transport, fingerprint: fingerprint, address: addr}
+	entry := &running{server: server, listener: listener, transport: closer, fingerprint: fingerprint, address: addr}
 	m.instances[inst.Tag] = entry
 	m.statuses[inst.Tag] = Status{Running: true, CertificateReady: !inst.Stream.Website.AutoTLS}
 	go func() {
@@ -143,7 +162,9 @@ func (m *Manager) Ensure(inst Instance) (ensureErr error) {
 func (m *Manager) removeLocked(tag string) {
 	if inst := m.instances[tag]; inst != nil {
 		_ = inst.server.Close()
-		inst.transport.CloseIdleConnections()
+		if inst.transport != nil {
+			inst.transport.CloseIdleConnections()
+		}
 		delete(m.instances, tag)
 	}
 	delete(m.statuses, tag)
@@ -179,4 +200,21 @@ func (m *Manager) Prune(keep map[string]bool) {
 			m.removeLocked(tag)
 		}
 	}
+}
+
+func (m *Manager) ensureFallbackLocked(inst Instance, fingerprint string) error {
+	addr := SiteAddress(inst.Tag)
+	if old := m.instances[inst.Tag]; old != nil {
+		m.removeLocked(inst.Tag)
+	}
+	listener, err := net.Listen("unix", addr)
+	if err != nil {
+		return err
+	}
+	server := &http.Server{Handler: NewHandler(inst.Stream.Website, "", "http://localhost", http.DefaultTransport), ReadHeaderTimeout: 10 * time.Second}
+	entry := &running{server: server, listener: listener, fingerprint: fingerprint, address: addr}
+	m.instances[inst.Tag] = entry
+	m.statuses[inst.Tag] = Status{Running: true, CertificateReady: true}
+	go func() { _ = server.Serve(listener) }()
+	return nil
 }

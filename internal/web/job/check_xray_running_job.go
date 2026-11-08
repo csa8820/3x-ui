@@ -28,7 +28,7 @@ func (j *CheckXrayRunningJob) Run() {
 	if !j.xrayService.DidXrayCrash() {
 		j.checkTime = 0
 		j.websiteCheckTime++
-		if j.websiteCheckTime%5 == 0 && j.xrayService.IsXrayRunning() {
+		if j.websiteCheckTime%5 == 0 {
 			if err := j.xrayService.ReconcileWebsites(); err != nil {
 				logger.Warning("website reconcile failed:", err)
 			}

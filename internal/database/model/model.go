@@ -400,11 +400,40 @@ func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 	}
 	port := i.Port
 	if site, err := website.Parse(streamSettings); err == nil && site.Website.Enabled {
-		encodedListen, _ := json.Marshal(website.BackendAddress(i.Tag))
-		listen = string(encodedListen)
-		port = 0
-		streamSettings = website.CoreStream(streamSettings)
+		switch site.Website.Mode {
+		case "independent":
+		case "fallback":
+			var parsed map[string]any
+			_ = json.Unmarshal([]byte(settings), &parsed)
+			if parsed == nil {
+				parsed = map[string]any{}
+			}
+			fallbacks, _ := parsed["fallbacks"].([]any)
+			parsed["fallbacks"] = append(fallbacks, map[string]any{"dest": website.SiteAddress(i.Tag), "xver": 0})
+			data, _ := json.Marshal(parsed)
+			settings = string(data)
+		case "reality":
+			var parsed map[string]any
+			_ = json.Unmarshal([]byte(streamSettings), &parsed)
+			rs, _ := parsed["realitySettings"].(map[string]any)
+			if rs == nil {
+				rs = map[string]any{}
+			}
+			rs["target"] = website.SiteAddress(i.Tag)
+			rs["serverNames"] = []string{site.Website.Domain}
+			rs["xver"] = 0
+			parsed["realitySettings"] = rs
+			delete(parsed, "website")
+			data, _ := json.Marshal(parsed)
+			streamSettings = string(data)
+		default:
+			encodedListen, _ := json.Marshal(website.BackendAddress(i.Tag))
+			listen = string(encodedListen)
+			port = 0
+			streamSettings = website.CoreStream(streamSettings)
+		}
 	}
+
 	return &xray.InboundConfig{
 		Listen:         json_util.RawMessage(listen),
 		Port:           port,

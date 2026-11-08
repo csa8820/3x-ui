@@ -128,7 +128,8 @@
     "openMenu": "打开菜单",
     "pinSidebar": "固定侧边栏",
     "unpinSidebar": "取消固定侧边栏",
-    "subFormats": "Sub Formats"
+    "subFormats": "Sub Formats",
+    "sites": "伪站点"
   },
   "pages": {
     "login": {
@@ -2878,7 +2879,6 @@
     "acmeTerms": "启用自动证书即同意 Let’s Encrypt 用户协议。",
     "email": "证书通知邮箱（可选）",
     "title": "网站标题",
-    "create": "一键创建 XHTTP + 网站",
     "ready": "网站和证书已就绪",
     "awaitingCertificate": "网站已监听，正在申请证书",
     "stopped": "网站未运行",
@@ -2887,5 +2887,47 @@
     "invalidDomain": "请输入有效域名，不要包含协议、端口或路径。",
     "invalidPath": "请使用独立且以 / 结尾的 XHTTP 路径，例如 /connect-a83f/。",
     "introduction": "网站介绍"
+  },
+  "sites": {
+    "subtitle": "统一管理伪站点和模板，需要时再与任意入站关联。",
+    "create": "创建伪站点",
+    "gallery": "模板库",
+    "importZIP": "导入模板 ZIP",
+    "zipLimit": "模板 ZIP 不能超过 25 MiB。",
+    "standalone": "独立监听",
+    "onDemand": "关联时启动",
+    "empty": "先创建一个站点，或从模板库选择喜欢的样式。",
+    "bindHelp": "编辑任意入站，在“伪站点”页选择站点和端口配合方式；不关联时沿用原有行为。",
+    "editor": "伪站点设置",
+    "name": "站点名称",
+    "template": "网站模板",
+    "preview": "预览",
+    "importedContent": "标题和介绍适用于内置模板；导入模板保留原有内容。",
+    "standaloneHelp": "没有关联入站也启动 HTTPS 监听；与入站共用端口时请关闭此项。",
+    "certificateFile": "证书文件路径",
+    "keyFile": "私钥文件路径",
+    "search": "搜索模板名称、类别或来源",
+    "catalogHelp": "6 套内置模板离线可用，另提供 MIT 授权的 Start Bootstrap 模板一键安装，也可导入自己的静态模板 ZIP。",
+    "useTemplate": "使用此模板",
+    "install": "安装模板",
+    "deleteConfirm": "删除此站点？已被入站使用的站点需先解除关联。",
+    "associationHelp": "选择一个统一管理的伪站点，自动模式按当前协议匹配配合方式。任意协议均可配合独立网站端口；同一 TCP 端口共用需要对应传输支持。",
+    "none": "不关联伪站点",
+    "mode": "端口配合方式",
+    "fallbackCertificate": "RAW TLS 回落需选择使用现有证书的站点；HTTP 传输或 REALITY 可使用自动证书。",
+    "modes": {
+      "auto": "自动匹配",
+      "path": "HTTP 路径共用端口",
+      "fallback": "RAW TLS 回落",
+      "reality": "REALITY 本地目标站",
+      "independent": "独立网站 / TCP-UDP 同号共存"
+    },
+    "hints": {
+      "path": "普通访问显示网站，独立 HTTP 路径转发到本入站，共用同一个 TLS 端口。",
+      "fallback": "Xray 继续处理 TLS，将普通浏览器请求回落到所选站点。",
+      "reality": "所选站点作为本机 REALITY 目标站，密钥和客户端凭据仍由入站管理。",
+      "independent": "网站使用设置中的 TCP 端口；UDP 协议可使用相同端口号，其他 TCP 协议需使用不同端口。"
+    },
+    "references": "关联入站：{count} 个"
   }
 }

@@ -76,7 +76,7 @@ func TLSConfig(s Stream) (*tls.Config, error) {
 		c.NextProtos = append(c.NextProtos, acme.ALPNProto)
 		return c, nil
 	}
-	certs, err := s.TLS.LoadCertificates()
+	certs, err := EffectiveTLS(s).LoadCertificates()
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func TLSConfig(s Stream) (*tls.Config, error) {
 	}
 	// Re-read file certificates at handshake time so existing renewal jobs need no restart hook.
 	c.GetCertificate = func(hello *tls.ClientHelloInfo) (*tls.Certificate, error) {
-		certs, err := s.TLS.LoadCertificates()
+		certs, err := EffectiveTLS(s).LoadCertificates()
 		if err != nil {
 			return nil, err
 		}

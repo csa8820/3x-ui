@@ -751,15 +751,11 @@ export default function InboundsPage() {
                 <Row gutter={[isMobile ? 8 : 16, 12]}>
                   <Col span={24}>
                     <Button
-                      type="primary"
                       onClick={() => {
-                        setWebsitePreset(true);
-                        setFormMode('add');
-                        setFormDbInbound(null);
-                        setFormOpen(true);
+                        window.location.href = `${(window.X_UI_BASE_PATH || '/').replace(/\/$/, '')}/panel/sites`;
                       }}
                     >
-                      {t('website.create')}
+                      {t('menu.sites')}
                     </Button>
                   </Col>
                   <Col span={24}>

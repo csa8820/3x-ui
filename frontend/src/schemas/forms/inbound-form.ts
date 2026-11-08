@@ -65,8 +65,11 @@ const StrictInboundStreamSchema = NetworkSettingsSchema.and(InboundSecuritySetti
 const AutomaticWebsiteStreamSchema =
   NetworkSettingsSchema.and(SecuritySettingsSchema).and(StreamExtrasSchema);
 export const InboundStreamFormSchema = z.unknown().transform((value, ctx) => {
-  const probe = value as { website?: { enabled?: boolean; autoTLS?: boolean } } | null;
-  const automatic = probe?.website?.enabled === true && probe.website.autoTLS === true;
+  const probe = value as {
+    website?: { enabled?: boolean; autoTLS?: boolean; siteId?: number };
+  } | null;
+  const automatic =
+    probe?.website?.enabled === true && (probe.website.autoTLS === true || !!probe.website.siteId);
   const parsed = (automatic ? AutomaticWebsiteStreamSchema : StrictInboundStreamSchema).safeParse(
     value,
   );
@@ -75,7 +78,7 @@ export const InboundStreamFormSchema = z.unknown().transform((value, ctx) => {
     return z.NEVER;
   }
   const stream = parsed.data;
-  if (stream.website?.enabled) {
+  if (stream.website?.enabled && !stream.website.siteId) {
     if (stream.network !== 'xhttp' || stream.security !== 'tls') {
       ctx.addIssue({ code: 'custom', path: ['website'], message: 'website.invalidTransport' });
     }

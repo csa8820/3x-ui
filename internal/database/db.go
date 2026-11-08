@@ -65,6 +65,7 @@ func allModels() []any {
 	return []any{
 		&model.User{},
 		&model.Inbound{},
+		&model.DecoySite{},
 		&model.OutboundTraffics{},
 		&model.Setting{},
 		&model.InboundClientIps{},

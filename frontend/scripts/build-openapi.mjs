@@ -34,7 +34,7 @@ const SECURITY_SCHEMES = {
 };
 
 function ginPathToOpenApi(path) {
-  return path.replace(/:([A-Za-z_][A-Za-z0-9_]*)/g, '{$1}');
+  return path.replace(/:([A-Za-z_][A-Za-z0-9_]*)/g, '{$1}').replace(/\*([A-Za-z_][A-Za-z0-9_]*)/g, '{$1}');
 }
 
 function extractPathParams(openApiPath) {

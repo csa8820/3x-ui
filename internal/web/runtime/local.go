@@ -108,6 +108,12 @@ func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
 		return err
 	}
 	if site, err := website.Parse(ib.StreamSettings); err == nil && site.Website.Enabled {
+		if site.Website.Mode == "independent" {
+			if l.deps.RequestReconcile != nil {
+				l.deps.RequestReconcile()
+			}
+			return nil
+		}
 		return website.GetManager().Ensure(website.Instance{Tag: ib.Tag, Listen: ib.Listen, Port: ib.Port, Stream: site})
 	}
 	return nil

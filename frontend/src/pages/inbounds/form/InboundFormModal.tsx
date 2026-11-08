@@ -101,6 +101,7 @@ import { useInboundFallbacks } from './useInboundFallbacks';
 import FallbacksCard from './FallbacksCard';
 import SniffingTab from './SniffingTab';
 import WebsiteFields from './WebsiteFields';
+import SiteAssociation from './SiteAssociation';
 
 import type { DBInbound } from '@/models/dbinbound';
 import type { NodeRecord } from '@/api/queries/useNodesQuery';
@@ -594,7 +595,6 @@ export default function InboundFormModal({
         setV('nodeId', null);
       }
       if (next !== Protocols.VLESS) {
-        setV('streamSettings.website', undefined);
         setV('disableFlow', false);
       }
       if (next === Protocols.HYSTERIA) {
@@ -977,7 +977,7 @@ export default function InboundFormModal({
     ];
     const current = (getV('streamSettings') as Record<string, unknown>) ?? {};
     const cleaned: Record<string, unknown> = { ...current, network: next };
-    if (next !== 'xhttp') delete cleaned.website;
+
     for (const k of ALL) {
       if (k !== `${next}Settings`) delete cleaned[k];
     }
@@ -1111,7 +1111,6 @@ export default function InboundFormModal({
           buttonStyle="solid"
           disabled={!tlsOk}
           onChange={(e) => {
-            if (e.target.value !== 'tls') setV('streamSettings.website', undefined);
             onSecurityChange(e.target.value);
           }}
         >
@@ -1334,6 +1333,13 @@ export default function InboundFormModal({
                         : []),
                     ]
                   : []),
+                {
+                  key: 'website',
+                  label: t('menu.sites'),
+                  children: (
+                    <SiteAssociation inboundId={mode === 'edit' ? dbInbound?.id : undefined} />
+                  ),
+                },
                 ...(sniffingSupported
                   ? [
                       {

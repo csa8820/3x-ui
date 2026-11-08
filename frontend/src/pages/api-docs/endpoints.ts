@@ -254,6 +254,57 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'sites',
+    title: 'Decoy websites',
+    description: 'Reusable websites, templates and optional inbound associations.',
+    endpoints: [
+      { method: 'GET', path: '/panel/api/sites/list', summary: 'List reusable website profiles' },
+      {
+        method: 'POST',
+        path: '/panel/api/sites/save',
+        summary: 'Create or update a website profile and synchronize associated inbounds',
+        params: [
+          { name: 'id', in: 'body', type: 'integer', optional: true },
+          { name: 'name', in: 'body', type: 'string' },
+          {
+            name: 'config',
+            in: 'body',
+            type: 'string',
+            desc: 'JSON-encoded website configuration',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sites/del/:id',
+        summary: 'Delete an unreferenced website profile',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sites/templates',
+        summary: 'List built-in, installed and available open-source templates',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sites/templates/install',
+        summary: 'Install an allowlisted open-source template',
+        params: [{ name: 'id', in: 'body', type: 'string' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sites/templates/import',
+        summary: 'Import a static template ZIP up to 25 MiB',
+        params: [{ name: 'file', in: 'body (multipart)', type: 'file' }],
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sites/templates/preview/:id/*path',
+        summary: 'Preview an installed template with script execution disabled',
+      },
+    ],
+  },
+
+  {
     id: 'inbounds',
     title: 'Inbounds',
     description:

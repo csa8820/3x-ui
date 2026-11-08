@@ -5024,6 +5024,10 @@
       "description": "Two authentication modes are supported. UI sessions use a cookie set by the login endpoint. Programmatic clients (bots, scripts, remote panels) authenticate with a Bearer token taken from Settings → Security → API Token. Both work for every endpoint under /panel/api/*."
     },
     {
+      "name": "Decoy websites",
+      "description": "Reusable websites, templates and optional inbound associations."
+    },
+    {
       "name": "Inbounds",
       "description": "Manage inbound configurations and their clients. All endpoints live under /panel/api/inbounds and require a logged-in session or Bearer token. Link-generating endpoints honour forwarded headers only when the request comes from a configured trusted proxy."
     },
@@ -5310,6 +5314,314 @@
                 "example": {
                   "success": true,
                   "obj": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sites/list": {
+      "get": {
+        "tags": [
+          "Decoy websites"
+        ],
+        "summary": "List reusable website profiles",
+        "operationId": "get_panel_api_sites_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sites/save": {
+      "post": {
+        "tags": [
+          "Decoy websites"
+        ],
+        "summary": "Create or update a website profile and synchronize associated inbounds",
+        "operationId": "post_panel_api_sites_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "description": ""
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": ""
+                  },
+                  "config": {
+                    "type": "string",
+                    "description": "JSON-encoded website configuration"
+                  }
+                },
+                "required": [
+                  "name",
+                  "config"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sites/del/{id}": {
+      "post": {
+        "tags": [
+          "Decoy websites"
+        ],
+        "summary": "Delete an unreferenced website profile",
+        "operationId": "post_panel_api_sites_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sites/templates": {
+      "get": {
+        "tags": [
+          "Decoy websites"
+        ],
+        "summary": "List built-in, installed and available open-source templates",
+        "operationId": "get_panel_api_sites_templates",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sites/templates/install": {
+      "post": {
+        "tags": [
+          "Decoy websites"
+        ],
+        "summary": "Install an allowlisted open-source template",
+        "operationId": "post_panel_api_sites_templates_install",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sites/templates/import": {
+      "post": {
+        "tags": [
+          "Decoy websites"
+        ],
+        "summary": "Import a static template ZIP up to 25 MiB",
+        "operationId": "post_panel_api_sites_templates_import",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sites/templates/preview/{id}/{path}": {
+      "get": {
+        "tags": [
+          "Decoy websites"
+        ],
+        "summary": "Preview an installed template with script execution disabled",
+        "operationId": "get_panel_api_sites_templates_preview_id_path",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
                 }
               }
             }

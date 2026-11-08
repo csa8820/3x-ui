@@ -44,11 +44,13 @@ Built as an enhanced fork of the original X-UI project, 3X-UI adds broader proto
 - **14 UI languages** with dark and light themes.
 - **Fail2ban integration** for enforcing per-client IP limits.
 
-## Built-in XHTTP website (this fork)
+## Decoy websites and templates (this fork)
 
-Create **VLESS + XHTTP + TLS + a normal HTTPS website** from the inbounds page with no additional web server. The preset creates a client, selects port 443, and generates a separate XHTTP path. Use automatic certificate issuance/renewal or an existing certificate, and edit the website title and introduction in the panel.
+Manage reusable websites independently from proxy protocols. The **Websites** page includes six offline templates, a nine-item Start Bootstrap catalog with on-demand installation, ZIP import, previews, domain/certificate settings, and optional standalone listeners. Each inbound can select a website and a compatible port-sharing mode, or remain unassociated.
 
-See [使用说明：一键部署 XHTTP 和网站](docs/xhttp-website.zh-CN.md) for installation, DNS prerequisites and supported configurations. This fork's installer and updater use `csa8820/3x-ui` releases.
+HTTP transports share TLS ports by path; RAW VLESS/Trojan can use fallback, REALITY can use a local target, and other protocols can use independent website ports (including TCP/UDP port-number coexistence). Incompatible TCP combinations are rejected explicitly. No additional web server is needed.
+
+See [使用说明：伪站点、模板库与入站关联](docs/decoy-sites.zh-CN.md). Installer and updater downloads use `csa8820/3x-ui` releases.
 
 ## Screenshots
 

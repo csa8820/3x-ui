@@ -537,5 +537,7 @@ func (a *InboundController) getWebsiteStatus(c *gin.Context) {
 		jsonObj(c, nil, err)
 		return
 	}
-	jsonObj(c, website.GetManager().Status(ib.Tag), nil)
+	stream, _ := website.Parse(ib.StreamSettings)
+	inst := service.WebsiteInstance(ib, stream)
+	jsonObj(c, website.GetManager().Status(inst.Tag), nil)
 }
