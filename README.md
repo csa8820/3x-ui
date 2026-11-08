@@ -44,6 +44,12 @@ Built as an enhanced fork of the original X-UI project, 3X-UI adds broader proto
 - **14 UI languages** with dark and light themes.
 - **Fail2ban integration** for enforcing per-client IP limits.
 
+## Built-in XHTTP website (this fork)
+
+Create **VLESS + XHTTP + TLS + a normal HTTPS website** from the inbounds page with no additional web server. The preset creates a client, selects port 443, and generates a separate XHTTP path. Use automatic certificate issuance/renewal or an existing certificate, and edit the website title and introduction in the panel.
+
+See [使用说明：一键部署 XHTTP 和网站](docs/xhttp-website.zh-CN.md) for installation, DNS prerequisites and supported configurations. This fork's installer and updater use `csa8820/3x-ui` releases.
+
 ## Screenshots
 
 <details>

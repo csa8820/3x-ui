@@ -769,6 +769,7 @@ func (s *SubJsonService) streamData(stream string, clientKey string) map[string]
 	if err := json.Unmarshal([]byte(stream), &streamSettings); err != nil || streamSettings == nil {
 		streamSettings = map[string]any{}
 	}
+	delete(streamSettings, "website")
 	security, _ := streamSettings["security"].(string)
 	switch security {
 	case "tls":

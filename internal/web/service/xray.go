@@ -19,6 +19,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/json_util"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/maskcompat"
+	"github.com/mhsanaei/3x-ui/v3/internal/website"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 
 	"go.uber.org/atomic"
@@ -1498,7 +1499,12 @@ func (s *XrayService) TestRoute(req xray.RouteTestRequest) (*xray.RouteTestResul
 // the Xray gRPC API without restarting the process (inbounds, outbounds and
 // routing rules/balancers are hot-reloadable); only changes the core cannot
 // take at runtime — or a force request — stop and restart the process.
-func (s *XrayService) RestartXray(isForce bool) error {
+func (s *XrayService) RestartXray(isForce bool) (restartErr error) {
+	defer func() {
+		if restartErr == nil && !isManuallyStopped.Load() {
+			restartErr = s.ReconcileWebsites()
+		}
+	}()
 	lock.Lock()
 	defer lock.Unlock()
 	logger.Debug("restart Xray, force:", isForce)
@@ -1515,6 +1521,15 @@ func (s *XrayService) RestartXray(isForce bool) error {
 		return err
 	}
 
+	desired, err := desiredWebsites()
+	if err != nil {
+		return err
+	}
+	keepWebsites := make(map[string]bool, len(desired))
+	for _, inst := range desired {
+		keepWebsites[inst.Tag] = true
+	}
+	website.GetManager().Prune(keepWebsites)
 	process := currentXrayProcess()
 	if process != nil && process.IsRunning() {
 		configUnchanged := process.GetConfig().Equals(xrayConfig)
@@ -1789,6 +1804,7 @@ func (s *XrayService) StopXray() error {
 	lock.Lock()
 	defer lock.Unlock()
 	isManuallyStopped.Store(true)
+	website.GetManager().StopAll()
 	logger.Debug("Attempting to stop Xray...")
 	process := currentXrayProcess()
 	if process != nil && process.IsRunning() {

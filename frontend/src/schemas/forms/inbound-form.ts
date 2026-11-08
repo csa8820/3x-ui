@@ -7,6 +7,7 @@ import {
   TlsStreamSettingsSchema,
   securitySettingsSchemaFor,
   tlsCertUsesFiles,
+  SecuritySettingsSchema,
 } from '@/schemas/protocols/security';
 import { NetworkSettingsSchema, StreamExtrasSchema } from '@/schemas/protocols/stream';
 
@@ -58,9 +59,46 @@ const InboundTlsSettingsSchema = TlsStreamSettingsSchema.extend({
 
 const InboundSecuritySettingsSchema = securitySettingsSchemaFor(InboundTlsSettingsSchema);
 
-export const InboundStreamFormSchema = NetworkSettingsSchema.and(InboundSecuritySettingsSchema).and(
+const StrictInboundStreamSchema = NetworkSettingsSchema.and(InboundSecuritySettingsSchema).and(
   StreamExtrasSchema,
 );
+const AutomaticWebsiteStreamSchema =
+  NetworkSettingsSchema.and(SecuritySettingsSchema).and(StreamExtrasSchema);
+export const InboundStreamFormSchema = z.unknown().transform((value, ctx) => {
+  const probe = value as { website?: { enabled?: boolean; autoTLS?: boolean } } | null;
+  const automatic = probe?.website?.enabled === true && probe.website.autoTLS === true;
+  const parsed = (automatic ? AutomaticWebsiteStreamSchema : StrictInboundStreamSchema).safeParse(
+    value,
+  );
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) ctx.addIssue({ ...issue });
+    return z.NEVER;
+  }
+  const stream = parsed.data;
+  if (stream.website?.enabled) {
+    if (stream.network !== 'xhttp' || stream.security !== 'tls') {
+      ctx.addIssue({ code: 'custom', path: ['website'], message: 'website.invalidTransport' });
+    }
+    if (!/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?\.[a-z]{2,}$/i.test(stream.website.domain)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['website', 'domain'],
+        message: 'website.invalidDomain',
+      });
+    }
+    if (
+      stream.network === 'xhttp' &&
+      !/^\/(?:[A-Za-z0-9_-]+\/)+$/.test(stream.xhttpSettings.path)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['xhttpSettings', 'path'],
+        message: 'website.invalidPath',
+      });
+    }
+  }
+  return stream;
+});
 export type InboundStreamFormValues = z.infer<typeof InboundStreamFormSchema>;
 
 export const TrafficResetSchema = z.enum(['never', 'hourly', 'daily', 'weekly', 'monthly']);

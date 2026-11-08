@@ -14,6 +14,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/util/json_util"
+	"github.com/mhsanaei/3x-ui/v3/internal/website"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 )
 
@@ -397,9 +398,16 @@ func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 			streamSettings = healed
 		}
 	}
+	port := i.Port
+	if site, err := website.Parse(streamSettings); err == nil && site.Website.Enabled {
+		encodedListen, _ := json.Marshal(website.BackendAddress(i.Tag))
+		listen = string(encodedListen)
+		port = 0
+		streamSettings = website.CoreStream(streamSettings)
+	}
 	return &xray.InboundConfig{
 		Listen:         json_util.RawMessage(listen),
-		Port:           i.Port,
+		Port:           port,
 		Protocol:       protocol,
 		Settings:       json_util.RawMessage(settings),
 		StreamSettings: json_util.RawMessage(streamSettings),

@@ -285,6 +285,13 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/inbounds/:id/websiteStatus',
+        summary: 'Get the built-in XHTTP website listener and certificate status',
+        params: [{ name: 'id', in: 'path', type: 'integer' }],
+        response: '{"success":true,"obj":{"running":true,"certificateReady":true,"error":""}}',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/inbounds/amneziawgKernelReadiness',
         responseSchema: 'Readiness',
         summary:

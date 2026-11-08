@@ -5517,6 +5517,55 @@
         }
       }
     },
+    "/panel/api/inbounds/{id}/websiteStatus": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Get the built-in XHTTP website listener and certificate status",
+        "operationId": "get_panel_api_inbounds_id_websiteStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "running": true,
+                    "certificateReady": true,
+                    "error": ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/inbounds/amneziawgKernelReadiness": {
       "get": {
         "tags": [

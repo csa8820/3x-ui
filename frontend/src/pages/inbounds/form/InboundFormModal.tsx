@@ -26,7 +26,10 @@ import {
   formValuesToWirePayload,
   withoutClients,
 } from '@/lib/xray/inbound-form-adapter';
-import { createDefaultInboundSettings } from '@/lib/xray/inbound-defaults';
+import {
+  createDefaultInboundSettings,
+  createDefaultVlessClient,
+} from '@/lib/xray/inbound-defaults';
 import { generateAwgObfuscation } from '@/lib/xray/amneziawg-obfuscation';
 import { composeInboundTag, isAutoInboundTag, type InboundTagInput } from '@/lib/xray/inbound-tag';
 import {
@@ -97,6 +100,7 @@ import { useSecurityActions } from './useSecurityActions';
 import { useInboundFallbacks } from './useInboundFallbacks';
 import FallbacksCard from './FallbacksCard';
 import SniffingTab from './SniffingTab';
+import WebsiteFields from './WebsiteFields';
 
 import type { DBInbound } from '@/models/dbinbound';
 import type { NodeRecord } from '@/api/queries/useNodesQuery';
@@ -190,6 +194,7 @@ interface InboundFormModalProps {
   onClose: () => void;
   onSaved: () => void;
   mode: 'add' | 'edit';
+  websitePreset?: boolean;
   dbInbound: DBInbound | null;
   dbInbounds: DBInbound[];
   availableNodes?: NodeRecord[];
@@ -252,6 +257,7 @@ export default function InboundFormModal({
   dbInbounds,
   availableNodes,
   availableNodesFetched = true,
+  websitePreset = false,
 }: InboundFormModalProps) {
   const { t } = useTranslation();
   const uid = useId();
@@ -299,6 +305,8 @@ export default function InboundFormModal({
   const mixedUdpOn = (useWatch({ control, name: 'settings.udp' }) ?? false) as boolean;
   const network = (useWatch({ control, name: 'streamSettings.network' }) ?? '') as string;
   const security = (useWatch({ control, name: 'streamSettings.security' }) ?? 'none') as string;
+  const websiteEnabled = useWatch({ control, name: 'streamSettings.website.enabled' });
+  const websiteAutoTLS = useWatch({ control, name: 'streamSettings.website.autoTLS' });
   const streamEnabled = canEnableStream({ protocol });
   const sniffingSupported = canEnableSniffing({ protocol });
   /*
@@ -480,9 +488,31 @@ export default function InboundFormModal({
         ? withoutClients(rawInboundToFormValues(dbInbound))
         : buildAddModeValues();
     methods.reset(initial);
+    if (mode === 'add' && websitePreset) {
+      setV('protocol', 'vless');
+      setV('port', 443);
+      setV('remark', 'XHTTP + Website');
+      setV('settings.clients', [createDefaultVlessClient()]);
+      setV('streamSettings', {
+        network: 'xhttp',
+        security: 'tls',
+        xhttpSettings: XHttpStreamSettingsSchema.parse({
+          path: `/connect-${RandomUtil.randomUUID().replaceAll('-', '').slice(0, 16)}/`,
+        }),
+        tlsSettings: { serverName: '', certificates: [], alpn: ['h2', 'http/1.1'] },
+        website: {
+          enabled: true,
+          autoTLS: true,
+          domain: '',
+          email: '',
+          title: '',
+          description: '',
+        },
+      });
+    }
     savedInboundId.current = null;
     setScanResult(null);
-    setActiveTab('basic');
+    setActiveTab(mode === 'add' && websitePreset ? 'security' : 'basic');
     const initialTag = (initial.tag ?? '') as string;
     autoTagRef.current = isAutoInboundTag(initialTag, {
       port: initial.port ?? 0,
@@ -503,7 +533,7 @@ export default function InboundFormModal({
     }
 
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [open, mode, dbInbound, methods]);
+  }, [open, mode, dbInbound, methods, websitePreset]);
 
   useEffect(() => {
     if (!open) return;
@@ -564,6 +594,7 @@ export default function InboundFormModal({
         setV('nodeId', null);
       }
       if (next !== Protocols.VLESS) {
+        setV('streamSettings.website', undefined);
         setV('disableFlow', false);
       }
       if (next === Protocols.HYSTERIA) {
@@ -946,6 +977,7 @@ export default function InboundFormModal({
     ];
     const current = (getV('streamSettings') as Record<string, unknown>) ?? {};
     const cleaned: Record<string, unknown> = { ...current, network: next };
+    if (next !== 'xhttp') delete cleaned.website;
     for (const k of ALL) {
       if (k !== `${next}Settings`) delete cleaned[k];
     }
@@ -1078,7 +1110,10 @@ export default function InboundFormModal({
           value={security}
           buttonStyle="solid"
           disabled={!tlsOk}
-          onChange={(e) => onSecurityChange(e.target.value)}
+          onChange={(e) => {
+            if (e.target.value !== 'tls') setV('streamSettings.website', undefined);
+            onSecurityChange(e.target.value);
+          }}
         >
           {!tlsOnly && <Radio.Button value="none">{t('none')}</Radio.Button>}
           <Radio.Button value="tls">TLS</Radio.Button>
@@ -1086,7 +1121,10 @@ export default function InboundFormModal({
         </Radio.Group>
       </Form.Item>
 
-      {security === 'tls' && (
+      {protocol === 'vless' && network === 'xhttp' && security === 'tls' && (
+        <WebsiteFields inboundId={mode === 'edit' ? dbInbound?.id : undefined} />
+      )}
+      {security === 'tls' && !(websiteEnabled && websiteAutoTLS) && (
         <TlsForm
           saving={saving}
           setCertFromPanel={setCertFromPanel}

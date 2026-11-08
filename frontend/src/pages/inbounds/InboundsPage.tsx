@@ -158,6 +158,7 @@ export default function InboundsPage() {
   });
 
   const [formOpen, setFormOpen] = useState(false);
+  const [websitePreset, setWebsitePreset] = useState(false);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [formDbInbound, setFormDbInbound] = useState<DBInbound | null>(null);
 
@@ -459,6 +460,7 @@ export default function InboundsPage() {
   }, [openPrompt, refresh, t]);
 
   const onAddInbound = useCallback(() => {
+    setWebsitePreset(false);
     setFormMode('add');
     setFormDbInbound(null);
     setFormOpen(true);
@@ -748,6 +750,19 @@ export default function InboundsPage() {
               ) : (
                 <Row gutter={[isMobile ? 8 : 16, 12]}>
                   <Col span={24}>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setWebsitePreset(true);
+                        setFormMode('add');
+                        setFormDbInbound(null);
+                        setFormOpen(true);
+                      }}
+                    >
+                      {t('website.create')}
+                    </Button>
+                  </Col>
+                  <Col span={24}>
                     <Card size="small" hoverable className="summary-card">
                       <Row gutter={[16, 12]}>
                         <Col xs={12} sm={12} md={8}>
@@ -814,6 +829,7 @@ export default function InboundsPage() {
 
         <LazyMount when={formOpen}>
           <InboundFormModal
+            websitePreset={websitePreset}
             open={formOpen}
             onClose={() => setFormOpen(false)}
             onSaved={refresh}

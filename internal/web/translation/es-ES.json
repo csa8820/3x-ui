@@ -2868,5 +2868,24 @@
     "restartXray": "Reiniciar servicio Xray",
     "restartXraySuccess": "El servicio Xray se ha reiniciado con éxito",
     "settings": "Configuración"
+  },
+  "website": {
+    "enabled": "Built-in website",
+    "help": "Serve a normal website and XHTTP on the same HTTPS port. No additional web server is required.",
+    "domain": "Website domain",
+    "autoTLS": "Obtain and renew certificates automatically",
+    "acmeHelp": "Point the domain directly to this server and allow inbound TCP 443. DNS proxying must be off for automatic TLS-ALPN verification. Issuance starts after saving and may take a few minutes.",
+    "acmeTerms": "Enabling automatic certificates accepts the Let’s Encrypt Subscriber Agreement.",
+    "email": "Certificate contact email (optional)",
+    "title": "Website title",
+    "create": "Create XHTTP + website",
+    "ready": "Website and certificate are ready",
+    "awaitingCertificate": "Website is listening; certificate issuance is in progress",
+    "stopped": "Website is not running",
+    "open": "Open website",
+    "invalidTransport": "A built-in website requires VLESS + XHTTP + TLS.",
+    "invalidDomain": "Enter a valid domain without scheme, port or path.",
+    "invalidPath": "Use a dedicated XHTTP path ending in /, for example /connect-a83f/.",
+    "introduction": "Website introduction"
   }
 }

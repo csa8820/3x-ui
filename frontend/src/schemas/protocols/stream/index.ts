@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { WebsiteSchema } from '@/schemas/website';
 
 import { PortSchema } from '@/schemas/primitives';
 
@@ -104,6 +105,7 @@ export type NetworkSettings = z.infer<typeof NetworkSettingsSchema>;
 // is empty. The shadow harness treats absent and empty-array as the same
 // canonical state.
 export const StreamExtrasSchema = z.object({
+  website: WebsiteSchema.optional(),
   externalProxy: z.array(ExternalProxyEntrySchema).optional(),
   finalmask: FinalMaskStreamSettingsSchema.optional(),
   sockopt: SockoptStreamSettingsSchema.optional(),

@@ -13,8 +13,9 @@ var EventBus *eventbus.Bus
 
 // CheckXrayRunningJob monitors Xray process health and restarts it if it crashes.
 type CheckXrayRunningJob struct {
-	xrayService service.XrayService
-	checkTime   int
+	xrayService      service.XrayService
+	checkTime        int
+	websiteCheckTime int
 }
 
 // NewCheckXrayRunningJob creates a new Xray health check job instance.
@@ -26,6 +27,12 @@ func NewCheckXrayRunningJob() *CheckXrayRunningJob {
 func (j *CheckXrayRunningJob) Run() {
 	if !j.xrayService.DidXrayCrash() {
 		j.checkTime = 0
+		j.websiteCheckTime++
+		if j.websiteCheckTime%5 == 0 && j.xrayService.IsXrayRunning() {
+			if err := j.xrayService.ReconcileWebsites(); err != nil {
+				logger.Warning("website reconcile failed:", err)
+			}
+		}
 	} else {
 		j.checkTime++
 		// only restart if it's down 2 times in a row

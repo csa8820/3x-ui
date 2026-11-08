@@ -2868,5 +2868,24 @@
     "restartXray": "重啟 Xray 服務",
     "restartXraySuccess": "Xray 服務已成功重啟",
     "settings": "設定"
+  },
+  "website": {
+    "enabled": "内置网站",
+    "help": "同一个 HTTPS 端口同时提供正常网站和 XHTTP，无需另装网站服务。",
+    "domain": "网站域名",
+    "autoTLS": "自动申请并续期证书",
+    "acmeHelp": "请将域名直接解析到本服务器，并放行 TCP 443。自动验证期间须关闭 DNS 代理。保存后开始申请证书，可能需要几分钟。",
+    "acmeTerms": "启用自动证书即同意 Let’s Encrypt 用户协议。",
+    "email": "证书通知邮箱（可选）",
+    "title": "网站标题",
+    "create": "一键创建 XHTTP + 网站",
+    "ready": "网站和证书已就绪",
+    "awaitingCertificate": "网站已监听，正在申请证书",
+    "stopped": "网站未运行",
+    "open": "打开网站",
+    "invalidTransport": "内置网站需要 VLESS + XHTTP + TLS。",
+    "invalidDomain": "请输入有效域名，不要包含协议、端口或路径。",
+    "invalidPath": "请使用独立且以 / 结尾的 XHTTP 路径，例如 /connect-a83f/。",
+    "introduction": "网站介绍"
   }
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
+	"github.com/mhsanaei/3x-ui/v3/internal/website"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 )
 
@@ -103,12 +104,17 @@ func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
 	if err != nil {
 		return err
 	}
-	return l.withAPI(func(api *xray.XrayAPI) error {
-		return api.AddInbound(body)
-	})
+	if err := l.withAPI(func(api *xray.XrayAPI) error { return api.AddInbound(body) }); err != nil {
+		return err
+	}
+	if site, err := website.Parse(ib.StreamSettings); err == nil && site.Website.Enabled {
+		return website.GetManager().Ensure(website.Instance{Tag: ib.Tag, Listen: ib.Listen, Port: ib.Port, Stream: site})
+	}
+	return nil
 }
 
 func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
+	website.GetManager().Remove(ib.Tag)
 	if ib.Protocol == model.MTProto {
 		mtproto.GetManager().Remove(ib.Id)
 		return nil
