@@ -249,7 +249,7 @@ func TestScriptConfigRejectsUnreadableSettings(t *testing.T) {
 		for _, mode := range []string{"failure", "empty", "missing_field", "malformed", "duplicate", "diagnostic"} {
 			t.Run(script+"/"+mode, func(t *testing.T) {
 				dir, out, err := runScriptConfig(t, script, "/", true, mode, 1, false)
-				if err == nil || !strings.Contains(out, "Unable to read webBasePath") {
+				if err == nil || !strings.Contains(out, "无法读取 webBasePath") {
 					t.Errorf("settings read should stop with an actionable error; got %v\n%s", err, out)
 				}
 				for name, want := range map[string]string{"path": "/", "username": "admin", "password": "admin", "writes": "", "restarts": ""} {
@@ -266,7 +266,7 @@ func TestScriptConfigReadFailureKeepsServiceSetup(t *testing.T) {
 	for _, script := range []string{"install.sh", "update.sh"} {
 		t.Run(script, func(t *testing.T) {
 			dir, out, err := runScriptConfig(t, script, "/a/", true, "failure", 1, true)
-			if err != nil || !strings.Contains(out, "Unable to read webBasePath") {
+			if err != nil || !strings.Contains(out, "无法读取 webBasePath") {
 				t.Errorf("service setup should continue after the settings warning: %v\n%s", err, out)
 			}
 			wantLifecycle, wantServices := "fail2ban\n", ""
