@@ -50,6 +50,24 @@ export default function SitesPage() {
     `${item.name} ${item.category} ${item.source}`.toLowerCase().includes(search.toLowerCase()),
   );
 
+  async function applyPanelCertificate() {
+    setError('');
+    setPending('panelCert');
+    try {
+      const response = await HttpUtil.post('/panel/api/setting/all', undefined, { silent: true });
+      const panel = response.obj as { webCertFile?: string; webKeyFile?: string } | undefined;
+      if (!response.success || !panel?.webCertFile || !panel.webKeyFile) {
+        setError(t('pages.inbounds.setDefaultCertEmpty'));
+        return;
+      }
+      form.setFieldsValue({ certificateFile: panel.webCertFile, keyFile: panel.webKeyFile });
+    } catch (e) {
+      if (e instanceof Error) setError(e.message);
+    } finally {
+      setPending('');
+    }
+  }
+
   function edit(site?: SiteRecord, template = 'studio') {
     setError('');
     setEditing(site?.id ?? null);
@@ -362,6 +380,23 @@ export default function SitesPage() {
                 <Form.Item name="keyFile" label={t('sites.keyFile')} rules={[{ required: true }]}>
                   <Input />
                 </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Space>
+                  <Button
+                    type="primary"
+                    loading={pending === 'panelCert'}
+                    onClick={() => void applyPanelCertificate()}
+                  >
+                    {t('pages.inbounds.setDefaultCert')}
+                  </Button>
+                  <Button
+                    danger
+                    onClick={() => form.setFieldsValue({ certificateFile: '', keyFile: '' })}
+                  >
+                    {t('clear')}
+                  </Button>
+                </Space>
               </Col>
             </Row>
           )}
